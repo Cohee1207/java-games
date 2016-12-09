@@ -1,7 +1,5 @@
 package org.sillylossy.games.common.game;
 
-import org.sillylossy.games.blackjack.game.StatEvent;
-import org.sillylossy.games.blackjack.game.Statistics;
 import org.sillylossy.games.common.Main;
 import org.sillylossy.games.common.players.Player;
 
@@ -47,9 +45,6 @@ public class GameController implements java.io.Serializable {
             statistics.put(player, statObj);
         }
         switch (event) {
-            case BLACKJACK:
-                statObj.addBlackjack();
-                break;
             case LOST:
                 statObj.addLose();
                 break;

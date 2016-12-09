@@ -1,6 +1,6 @@
 package org.sillylossy.games.common.ui.listeners;
 
-import org.sillylossy.games.blackjack.game.Statistics;
+import org.sillylossy.games.common.game.Statistics;
 import org.sillylossy.games.common.players.Player;
 
 import javax.swing.table.DefaultTableModel;
@@ -20,21 +20,18 @@ public final class StatMenuItemListener extends GameListener {
         Map<Player, Statistics> stats = getGameController().getStatistics();
         int count = stats.size();
         Player[] players = stats.keySet().toArray(new Player[count]);
-        String[] labels = new String[]{"Player", "Total games", "Games won", "Games lost", "Games stayed",
-                "Blackjacks"};
+        String[] labels = new String[]{"Player", "Total games", "Games won", "Games lost", "Games drawn"};
         Object[][] vector = new Object[players.length][labels.length];
         for (int i = 0; i < vector.length; i++) {
             int won = stats.get(players[i]).getGamesWon();
             int lost = stats.get(players[i]).getGamesLost();
             int stay = stats.get(players[i]).getGamesPushed();
-            int blackjacks = stats.get(players[i]).getBlackjacks();
             int total = won + lost + stay;
             vector[i][0] = players[i].toString();
             vector[i][1] = total;
             vector[i][2] = won;
             vector[i][3] = lost;
             vector[i][4] = stay;
-            vector[i][5] = blackjacks;
         }
         getMainPanel().setStats(new DefaultTableModel(vector, labels));
     }
