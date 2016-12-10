@@ -1,4 +1,4 @@
-<project name="java-games" basedir="." default="main">
+<project name="java-games" basedir="." default="test">
   <property name="dir.src"     value="src"/>
   <property name="dir.build"   value="build"/>
   <property name="dir.classes" value="${dir.build}/classes"/>
@@ -29,5 +29,5 @@
   </target>
 
   <target name="clean-build" depends="clean,jar"/>
-  <target name="main" depends="clean,run"/>
+  <target name="test" depends="jar"/>
 </project>
