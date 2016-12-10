@@ -31,6 +31,7 @@ public class GameInterface extends JFrame {
      * Creates a GUI and assign listeners.
      */
     public GameInterface() {
+        setLookAndFeel();
         addWindowListener(new WindowClosingListener());
         addWindowStateListener(new WindowStateChangeListener());
         setJMenuBar(createMenu());
@@ -40,7 +41,6 @@ public class GameInterface extends JFrame {
         setContentPane(mainPanel);
         setSize(defaultWindowSize);
         setLocationRelativeTo(null);
-        setLookAndFeel();
         mainPanel.flipToGameSelection();
         setVisible(true);
     }
@@ -84,7 +84,7 @@ public class GameInterface extends JFrame {
     private void setLookAndFeel() {
         try {
             for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
-                if (info.getName().equals("Nimbus")) {
+                if ("Nimbus".equals(info.getName())) {
                     UIManager.setLookAndFeel(info.getClassName());
                     break;
                 }

@@ -1,4 +1,4 @@
-<project name="java-games" basedir="." default="test">
+<project name="java-games" basedir="." default="run">
   <property name="dir.src"     value="src"/>
   <property name="dir.build"   value="build"/>
   <property name="dir.classes" value="${dir.build}/classes"/>
@@ -12,6 +12,11 @@
 
   <target name="compile">
     <mkdir dir="${dir.classes}"/>
+    <copy todir="${dir.classes}">
+      <fileset dir="${dir.src}">
+        <exclude name="**/*.java" />
+      </fileset>
+    </copy>
     <javac srcdir="${dir.src}" destdir="${dir.classes}"/>
   </target>
 
@@ -29,5 +34,5 @@
   </target>
 
   <target name="clean-build" depends="clean,jar"/>
-  <target name="test" depends="jar"/>
+  <target name="test" depends="compile"/>
 </project>
