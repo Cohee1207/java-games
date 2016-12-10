@@ -16,7 +16,7 @@ public abstract class GamePanel extends JPanel {
     /**
      * An active images controller.
      */
-    protected ImageController images = new ImageController();
+    protected final ImageController images = new ImageController();
 
     /**
      * Constructs a game panel - sets listener and colors.

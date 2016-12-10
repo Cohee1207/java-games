@@ -18,7 +18,7 @@ public abstract class GameListener implements ActionListener {
     protected GameListener() {
     }
 
-    protected GameController getGameController() {
+    GameController getGameController() {
         return Main.getGameController();
     }
 

@@ -39,7 +39,7 @@ public class GameController implements java.io.Serializable {
      * @param event  a statistic event
      */
     public void addStatEvent(Player player, StatEvent event) {
-        Statistics statObj = getStatistics().getOrDefault(player, null);
+        Statistics statObj = statistics.get(player);
         if (statObj == null) {
             statObj = new Statistics();
             statistics.put(player, statObj);

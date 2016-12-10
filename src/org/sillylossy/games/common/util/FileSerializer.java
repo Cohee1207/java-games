@@ -14,10 +14,8 @@ public final class FileSerializer {
 
     /**
      * Private constructor of utility class.
-     *
-     * @throws Exception when trying to call this method
      */
-    private FileSerializer() throws Exception {
+    private FileSerializer() {
         throw new UnsupportedOperationException();
     }
 

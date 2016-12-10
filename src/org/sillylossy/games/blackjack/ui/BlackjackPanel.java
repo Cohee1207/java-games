@@ -40,31 +40,31 @@ public class BlackjackPanel extends org.sillylossy.games.common.ui.GamePanel {
     /**
      * JSpinner for betting.
      */
-    private JSpinner betSpinner = new JSpinner();
+    private final JSpinner betSpinner = new JSpinner();
     /**
      * Spinner model holds values used for betting (min, max, step).
      */
-    private SpinnerNumberModel betSpinnerModel = new SpinnerNumberModel();
+    private final SpinnerNumberModel betSpinnerModel = new SpinnerNumberModel();
     /**
      * "Accept" bet button.
      */
-    private JButton btnBet = new JButton("Accept");
+    private final JButton btnBet = new JButton("Accept");
     /**
      * "Double" game button.
      */
-    private JButton btnDouble = new JButton("Double");
+    private final JButton btnDouble = new JButton("Double");
     /**
      * "Hit" game button.
      */
-    private JButton btnHit = new JButton("Hit");
+    private final JButton btnHit = new JButton("Hit");
     /**
      * "Stand" game button.
      */
-    private JButton btnStand = new JButton("Stand");
+    private final JButton btnStand = new JButton("Stand");
     /**
      * Label with games status (current player, hand value, etc).
      */
-    private JLabel lblStatus = new JLabel();
+    private final JLabel lblStatus = new JLabel();
 
     /**
      * Creates a game panel with all needed visuals.

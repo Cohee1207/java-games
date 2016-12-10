@@ -49,12 +49,12 @@ public class MainPanel extends JPanel {
     /**
      * A GUI-list of players.
      */
-    private JList<Player> playersList = new JList<>();
+    private final JList<Player> playersList = new JList<>();
 
     /**
      * A GUI-table of statistics.
      */
-    private JTable statTable = new JTable();
+    private final JTable statTable = new JTable();
 
     /**
      * Reference to game panel of selected game.
