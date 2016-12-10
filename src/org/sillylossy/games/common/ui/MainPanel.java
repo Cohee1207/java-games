@@ -3,7 +3,7 @@ package org.sillylossy.games.common.ui;
 import org.sillylossy.games.blackjack.game.BlackjackGame;
 import org.sillylossy.games.blackjack.ui.BlackjackPanel;
 import org.sillylossy.games.common.Main;
-import org.sillylossy.games.common.game.CardGame;
+import org.sillylossy.games.common.game.Game;
 import org.sillylossy.games.common.players.Player;
 import org.sillylossy.games.common.ui.listeners.DeletePlayerButtonListener;
 import org.sillylossy.games.common.ui.listeners.NewPlayerButtonListener;
@@ -93,8 +93,8 @@ public class MainPanel extends JPanel {
     private JPanel createGameSelector() {
         JPanel panel = new JPanel();
         panel.setLayout(new BorderLayout());
-        JList<CardGame> gamesList = new JList<>();
-        DefaultListModel<CardGame> listModel = new DefaultListModel<>();
+        final JList<Game> gamesList = new JList<>();
+        DefaultListModel<Game> listModel = new DefaultListModel<>();
         gamesList.setModel(listModel);
         listModel.addElement(new BlackjackGame());
         panel.add(new JScrollPane(gamesList), BorderLayout.CENTER);
@@ -102,7 +102,7 @@ public class MainPanel extends JPanel {
         btnAccept.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                CardGame selected = gamesList.getSelectedValue();
+                Game selected = gamesList.getSelectedValue();
                 Main.setGameInstance(selected);
                 setGame(selected);
                 flipToPlayerSelection();
@@ -200,7 +200,7 @@ public class MainPanel extends JPanel {
      *
      * @param selected a reference to "Game object"
      */
-    private void setGame(CardGame selected) {
+    private void setGame(Game selected) {
         if (Objects.equals(selected.getGameName(), BlackjackGame.GAME_NAME)) {
             gamePanel = new BlackjackPanel();
             add(gamePanel, GAME_PANEL);

@@ -1,6 +1,6 @@
 package org.sillylossy.games.common;
 
-import org.sillylossy.games.common.game.CardGame;
+import org.sillylossy.games.common.game.Game;
 import org.sillylossy.games.common.game.GameController;
 import org.sillylossy.games.common.ui.GameInterface;
 import org.sillylossy.games.common.util.FileSerializer;
@@ -30,7 +30,7 @@ public class Main {
     /**
      * Current game instance.
      */
-    private static CardGame gameInstance;
+    private static Game gameInstance;
 
     /**
      * Gets a reference to a game controller.
@@ -42,14 +42,14 @@ public class Main {
     /**
      * Gets a reference to a game instance.
      */
-    public static CardGame getGameInstance() {
+    public static Game getGameInstance() {
         return gameInstance;
     }
 
     /**
      * Sets a game instance with value from param.
      */
-    public static void setGameInstance(CardGame gameInstance) {
+    public static void setGameInstance(Game gameInstance) {
         Main.gameInstance = gameInstance;
     }
 
@@ -68,12 +68,15 @@ public class Main {
      * @param args command line args array
      */
     public static void main(String[] args) {
-        EventQueue.invokeLater(() -> {
-            try {
-                controller = loadData();
-                ui = new GameInterface();
-            } catch (Exception e) {
-                e.printStackTrace();
+        EventQueue.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    controller = loadData();
+                    ui = new GameInterface();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         });
     }
@@ -82,11 +85,14 @@ public class Main {
      * Saves game data to a file. Runs in a separate thread.
      */
     public static void saveData() {
-        new Thread(() -> {
-            try {
-                FileSerializer.serialize(controller);
-            } catch (Exception e) {
-                e.printStackTrace();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    FileSerializer.serialize(controller);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         }).start();
     }

@@ -7,7 +7,7 @@ import org.sillylossy.games.common.players.Player;
 /**
  * Represents an abstract card game.
  */
-public abstract class CardGame {
+public abstract class CardGame implements Game {
     /**
      * Active card deck.
      */
@@ -62,21 +62,9 @@ public abstract class CardGame {
     protected abstract void reset();
 
     /**
-     * Returns a value that indicates whether a game should end.
-     */
-    public abstract boolean shouldEnd();
-
-    /**
      * Deals cards to players;
      */
     protected abstract void dealCards();
-
-    /**
-     * Gets a name of the game.
-     *
-     * @return string that contains game name
-     */
-    public abstract String getGameName();
 
     /**
      * Returns a string representation of the game.
