@@ -9,12 +9,13 @@ import org.sillylossy.games.common.ui.listeners.DeletePlayerButtonListener;
 import org.sillylossy.games.common.ui.listeners.NewPlayerButtonListener;
 import org.sillylossy.games.common.ui.listeners.ReturnButtonListener;
 import org.sillylossy.games.common.ui.listeners.SelectPlayerButtonListener;
+import org.sillylossy.games.videopoker.game.VideoPokerGame;
+import org.sillylossy.games.videopoker.ui.VideoPokerPanel;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.util.Objects;
 
 /**
  * Main content panel of GUI.
@@ -97,6 +98,7 @@ public class MainPanel extends JPanel {
         DefaultListModel<Game> listModel = new DefaultListModel<>();
         gamesList.setModel(listModel);
         listModel.addElement(new BlackjackGame());
+        listModel.addElement(new VideoPokerGame());
         panel.add(new JScrollPane(gamesList), BorderLayout.CENTER);
         JButton btnAccept = new JButton("Accept");
         btnAccept.addActionListener(new AbstractAction() {
@@ -125,11 +127,7 @@ public class MainPanel extends JPanel {
      * Shows statistics panel.
      */
     public void flipToStatistics() {
-        if (Main.getGameInstance() != null) {
-            gameLayout.show(this, STAT_PANEL);
-        } else {
-            Main.getUI().alert("Select a game first.");
-        }
+        gameLayout.show(this, STAT_PANEL);
     }
 
     /**
@@ -205,12 +203,13 @@ public class MainPanel extends JPanel {
      * @param selected a reference to "Game object"
      */
     private void setGame(Game selected) {
-        if (Objects.equals(selected.getGameName(), BlackjackGame.GAME_NAME)) {
+        if (selected.getGameName().equals(BlackjackGame.GAME_NAME)) {
             gamePanel = new BlackjackPanel();
-            add(gamePanel, GAME_PANEL);
+        } else if (selected.getGameName().equals(VideoPokerGame.GAME_NAME)){
+            gamePanel = new VideoPokerPanel();
         } else {
-            // TODO: Add more games
             throw new UnsupportedOperationException();
         }
+        add(gamePanel, GAME_PANEL);
     }
 }

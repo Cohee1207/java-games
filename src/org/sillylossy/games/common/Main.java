@@ -74,6 +74,7 @@ public class Main {
                 try {
                     controller = loadData();
                     ui = new GameInterface();
+                    ui.getMainPanel().flipToGameSelection();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

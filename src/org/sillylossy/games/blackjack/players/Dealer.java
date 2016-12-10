@@ -1,5 +1,7 @@
 package org.sillylossy.games.blackjack.players;
 
+import org.sillylossy.games.blackjack.game.BlackjackGame;
+import org.sillylossy.games.common.Main;
 import org.sillylossy.games.common.cards.Card;
 import org.sillylossy.games.common.cards.Deck;
 import org.sillylossy.games.common.cards.Hand;
@@ -24,13 +26,15 @@ public class Dealer extends Participant {
         return getHand().peek();
     }
 
+    private final int STOP_VALUE = 17;
+
     /**
-     * Dealer makes his play here (takes cards until hand value less than 17).
+     * Dealer makes his play here (takes cards until hand value less than STOP_VALUE).
      *
      * @param deck reference to deck object
      */
     public void play(Deck deck) {
-        while (getHand().getValue() < 17) {
+        while (((BlackjackGame)Main.getGameInstance()).getValue(getHand().getCards()) < STOP_VALUE) {
             getHand().addCard(deck.draw());
         }
     }

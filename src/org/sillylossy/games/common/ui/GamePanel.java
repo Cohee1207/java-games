@@ -21,11 +21,16 @@ public abstract class GamePanel extends JPanel {
     /**
      * Constructs a game panel - sets listener and colors.
      */
-    protected GamePanel() {
+    GamePanel() {
         addComponentListener(new ResizePanelListener());
         setBorder(new LineBorder(Color.GRAY, 1, true));
-        setBackground(new Color(34, 139, 34));
+        gameArea.setBackground(new Color(34, 139, 34));
+        setLayout(new BorderLayout());
+        add(createStatusBar(), BorderLayout.SOUTH);
+        add(gameArea, BorderLayout.CENTER);
     }
+
+    protected final JPanel gameArea = new JPanel();
 
     /**
      * Redraws a game panel.
@@ -33,9 +38,30 @@ public abstract class GamePanel extends JPanel {
     public abstract void redraw();
 
     /**
+     * Label with games status (current player, hand value, etc).
+     */
+    protected final JLabel lblStatus = new JLabel();
+
+    /**
+     * Creates status bar with status label.
+     */
+    private JPanel createStatusBar() {
+        JPanel statusBar = new JPanel();
+        statusBar.add(lblStatus);
+        return statusBar;
+    }
+
+    /**
+     * Updates player's status in status bar.
+     */
+    protected abstract void updateStatus();
+
+    /**
      * Starts a game.
      */
     public abstract void start();
+
+    public abstract void processResults();
 
     /**
      * Panel resizing event handler.

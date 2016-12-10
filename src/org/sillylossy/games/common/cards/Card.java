@@ -30,7 +30,7 @@ public class Card {
     /**
      * Gets a card's face.
      */
-    final CardFace getCardFace() {
+    public final CardFace getCardFace() {
         return cardFace;
     }
 

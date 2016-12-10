@@ -8,6 +8,8 @@ import org.sillylossy.games.common.players.Player;
 public interface Game {
     String getGameName();
 
+    Player getPlayer();
+
     void setPlayer(Player player);
 
     boolean shouldEnd();

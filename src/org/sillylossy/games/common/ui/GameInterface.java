@@ -41,7 +41,6 @@ public class GameInterface extends JFrame {
         setContentPane(mainPanel);
         setSize(defaultWindowSize);
         setLocationRelativeTo(null);
-        mainPanel.flipToGameSelection();
         setVisible(true);
     }
 
