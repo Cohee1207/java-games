@@ -116,6 +116,8 @@ public class MainPanel extends JPanel {
      * Shows game selection panel.
      */
     public void flipToGameSelection() {
+        Main.getUI().setTitle("Select a game");
+        Main.getGameController().setInGame(false);
         gameLayout.show(this, GAME_SELECTOR);
     }
 
@@ -172,6 +174,7 @@ public class MainPanel extends JPanel {
      */
     public void flipToGame() {
         Main.getGameController().setInGame(true);
+        Main.getUI().setTitle(Main.getGameInstance().getGameName());
         gameLayout.show(this, GAME_PANEL);
     }
 
@@ -180,6 +183,7 @@ public class MainPanel extends JPanel {
      */
     public void flipToPlayerSelection() {
         Main.getGameController().setInGame(false);
+        Main.getUI().setTitle("Select a player");
         DefaultListModel<Player> listModel = new DefaultListModel<>();
         for (Player player : Main.getGameController().getPlayers()) {
             listModel.addElement(player);
