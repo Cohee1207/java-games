@@ -40,7 +40,7 @@ public abstract class GamePanel extends JPanel {
     /**
      * Panel resizing event handler.
      */
-    final class ResizePanelListener extends ComponentAdapter {
+    private final class ResizePanelListener extends ComponentAdapter {
         /**
          * Redraws a cards when panel is resized.
          */
