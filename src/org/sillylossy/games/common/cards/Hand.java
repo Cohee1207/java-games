@@ -1,7 +1,5 @@
 package org.sillylossy.games.common.cards;
 
-import org.sillylossy.games.blackjack.game.BlackjackGame;
-
 import java.util.ArrayList;
 import java.util.List;
 

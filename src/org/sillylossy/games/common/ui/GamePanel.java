@@ -61,7 +61,7 @@ public abstract class GamePanel extends JPanel {
      */
     public abstract void start();
 
-    public abstract void processResults();
+    protected abstract void processResults();
 
     /**
      * Panel resizing event handler.

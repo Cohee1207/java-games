@@ -26,14 +26,13 @@ public class Dealer extends Participant {
         return getHand().peek();
     }
 
-    private final int STOP_VALUE = 17;
-
     /**
      * Dealer makes his play here (takes cards until hand value less than STOP_VALUE).
      *
      * @param deck reference to deck object
      */
     public void play(Deck deck) {
+        final int STOP_VALUE = 17;
         while (((BlackjackGame)Main.getGameInstance()).getValue(getHand().getCards()) < STOP_VALUE) {
             getHand().addCard(deck.draw());
         }

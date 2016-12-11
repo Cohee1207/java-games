@@ -5,12 +5,18 @@ import org.sillylossy.games.common.players.Player;
 /**
  * Interface for all the games in this app.
  */
-public interface Game {
-    String getGameName();
+public abstract class Game {
+    public abstract String getGameName();
 
-    Player getPlayer();
+    protected Player player;
 
-    void setPlayer(Player player);
+    public Player getPlayer() {
+        return player;
+    }
 
-    boolean shouldEnd();
+    public void setPlayer(Player player) {
+        this.player = player;
+    }
+
+    public abstract boolean shouldEnd();
 }

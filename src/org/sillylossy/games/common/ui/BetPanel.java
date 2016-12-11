@@ -1,9 +1,9 @@
 package org.sillylossy.games.common.ui;
 
-import org.sillylossy.games.common.game.BetGame;
 import org.sillylossy.games.common.Main;
+import org.sillylossy.games.common.game.BetGame;
+import org.sillylossy.games.common.game.Game;
 import org.sillylossy.games.common.players.Player;
-import org.sillylossy.games.common.ui.listeners.GameListener;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -40,7 +40,13 @@ public abstract class BetPanel extends GamePanel {
      * true if player didn't want to reset score
      */
     private boolean checkScore() {
-        Player player = gameInstance.getPlayer();
+        Player player = null;
+        if (gameInstance instanceof Game) {
+            player = ((Game) gameInstance).getPlayer();
+        }
+        if (player == null) {
+            throw new IllegalArgumentException("BetGame implementer should extend Game");
+        }
         final int LOW_SCORE = 20;
         if (player.getScore() <= LOW_SCORE) {
             if (Main.getUI().confirm(" You almost have 0 $ \n Reset score?")) {

@@ -1,4 +1,4 @@
-package org.sillylossy.games.common.ui.listeners;
+package org.sillylossy.games.common.ui;
 
 import org.sillylossy.games.common.Main;
 import org.sillylossy.games.common.game.Game;
@@ -22,19 +22,19 @@ public abstract class GameListener implements ActionListener {
         return Main.getGameController();
     }
 
-    protected GamePanel getGamePanel() {
+    GamePanel getGamePanel() {
         return Main.getUI().getMainPanel().getGamePanel();
     }
 
-    protected Game getGameInstance() {
+    Game getGameInstance() {
         return Main.getGameInstance();
     }
 
-    protected MainPanel getMainPanel() {
+    MainPanel getMainPanel() {
         return Main.getUI().getMainPanel();
     }
 
-    protected GameInterface getUI() {
+    GameInterface getUI() {
         return Main.getUI();
     }
 

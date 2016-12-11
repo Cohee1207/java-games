@@ -1,11 +1,18 @@
 package org.sillylossy.games.common.ui;
 
 import org.sillylossy.games.common.Main;
-import org.sillylossy.games.common.ui.listeners.*;
+import org.sillylossy.games.common.game.Statistics;
+import org.sillylossy.games.common.players.Player;
 
 import javax.swing.*;
 import javax.swing.UIManager.LookAndFeelInfo;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.awt.event.*;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.Map;
 
 /**
  * Main game GUI class.
@@ -113,7 +120,7 @@ public class GameInterface extends JFrame {
      * @param message a message that will be displayed
      * @return true if player pressed "Yes", else - false
      */
-    public boolean confirm(String message) {
+    boolean confirm(String message) {
         return JOptionPane.showConfirmDialog(this, message, "Confirmation",
                 JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION;
     }
@@ -121,7 +128,7 @@ public class GameInterface extends JFrame {
     /**
      * Asks for confirm and exits the game if the answer is "Yes".
      */
-    public void exit() {
+    private void exit() {
         if (Main.getGameController().isInGame()) {
             if (confirm("This will end your current game. Sure?")) {
                 dispose();
@@ -130,5 +137,107 @@ public class GameInterface extends JFrame {
             dispose();
         }
     }
+    /**
+     * Window closing event listener.
+     */
+    private final class WindowClosingListener extends WindowAdapter {
+        /**
+         * Calls GUI's "exit" handler.
+         */
+        @Override
+        public void windowClosing(WindowEvent e) {
+            exit();
+        }
+    }
 
+
+    /**
+     * "Statistics" menu item action listener.
+     */
+    public final class StatMenuItemListener extends GameListener {
+        /**
+         * Gets a statistics map from a game controller and forms a table model from it.
+         */
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            getMainPanel().flipToStatistics();
+            Map<Player, Statistics> stats = getGameController().getStatistics();
+            int count = stats.size();
+            Player[] players = stats.keySet().toArray(new Player[count]);
+            String[] labels = new String[]{"Player", "Total games", "Games won", "Games lost", "Games drawn"};
+            Object[][] vector = new Object[players.length][labels.length];
+            for (int i = 0; i < vector.length; i++) {
+                int won = stats.get(players[i]).getGamesWon();
+                int lost = stats.get(players[i]).getGamesLost();
+                int stay = stats.get(players[i]).getGamesPushed();
+                int total = won + lost + stay;
+                vector[i][0] = players[i].toString();
+                vector[i][1] = total;
+                vector[i][2] = won;
+                vector[i][3] = lost;
+                vector[i][4] = stay;
+            }
+            getMainPanel().setStats(new DefaultTableModel(vector, labels));
+        }
+    }
+
+    /**
+     * Window state change event listener.
+     */
+    private final class WindowStateChangeListener implements WindowStateListener {
+        /**
+         * Redraws cards when window state changes.
+         */
+        @Override
+        public void windowStateChanged(WindowEvent e) {
+            mainPanel.getGamePanel().redraw();
+        }
+    }
+
+    /**
+     * "Exit" menu item action listener.
+     */
+    private final class ExitMenuItemListener implements ActionListener {
+        /**
+         * Calls GUI's "exit" method.
+         */
+        @Override
+        public void actionPerformed(ActionEvent event) {
+            exit();
+        }
+    }
+
+    /**
+     * "How to play" menu item action listener.
+     */
+    private final class HowToPlayMenuItemListener implements ActionListener {
+        /**
+         * Opens game rules in default browser.
+         */
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (Desktop.isDesktopSupported()) {
+                try {
+                    Desktop.getDesktop().browse(new URI("https://goo.gl/oh5oT2"));
+                } catch (IOException | URISyntaxException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }
+    }
+
+    /**
+     * "About" menu item action listener.
+     */
+    private final class AboutMenuItemListener implements ActionListener {
+        /**
+         * Shows information about this program.
+         */
+        @Override
+        public void actionPerformed(ActionEvent event) {
+            alert( "Author: SillyLossy (http://github.com/sillylossy).\n\n" +
+                   "Card images: https://code.google.com/archive/p/vector-playing-cards/ \n" +
+                   "Card back image: http://svg-cards.sourceforge.net/ \n");
+        }
+    }
 }

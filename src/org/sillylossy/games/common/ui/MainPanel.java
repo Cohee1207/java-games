@@ -5,10 +5,6 @@ import org.sillylossy.games.blackjack.ui.BlackjackPanel;
 import org.sillylossy.games.common.Main;
 import org.sillylossy.games.common.game.Game;
 import org.sillylossy.games.common.players.Player;
-import org.sillylossy.games.common.ui.listeners.DeletePlayerButtonListener;
-import org.sillylossy.games.common.ui.listeners.NewPlayerButtonListener;
-import org.sillylossy.games.common.ui.listeners.ReturnButtonListener;
-import org.sillylossy.games.common.ui.listeners.SelectPlayerButtonListener;
 import org.sillylossy.games.videopoker.game.VideoPokerGame;
 import org.sillylossy.games.videopoker.ui.VideoPokerPanel;
 
@@ -126,14 +122,14 @@ public class MainPanel extends JPanel {
     /**
      * Shows statistics panel.
      */
-    public void flipToStatistics() {
+    void flipToStatistics() {
         gameLayout.show(this, STAT_PANEL);
     }
 
     /**
      * Gets a selected player from JList.
      */
-    public Player getSelectedPlayer() {
+    private Player getSelectedPlayer() {
         return playersList.getSelectedValue();
     }
 
@@ -142,7 +138,7 @@ public class MainPanel extends JPanel {
      *
      * @param defaultTableModel filled table data model
      */
-    public void setStats(DefaultTableModel defaultTableModel) {
+    void setStats(DefaultTableModel defaultTableModel) {
         statTable.setModel(defaultTableModel);
     }
 
@@ -170,7 +166,7 @@ public class MainPanel extends JPanel {
     /**
      * Show game panel.
      */
-    public void flipToGame() {
+    void flipToGame() {
         Main.getGameController().setInGame(true);
         Main.getUI().setTitle(Main.getGameInstance().getGameName());
         gameLayout.show(this, GAME_PANEL);
@@ -179,7 +175,7 @@ public class MainPanel extends JPanel {
     /**
      * Shows a player selection panel with list filled with registered players.
      */
-    public void flipToPlayerSelection() {
+    void flipToPlayerSelection() {
         Main.getGameController().setInGame(false);
         Main.getUI().setTitle("Select a player");
         DefaultListModel<Player> listModel = new DefaultListModel<>();
@@ -211,5 +207,88 @@ public class MainPanel extends JPanel {
             throw new UnsupportedOperationException();
         }
         add(gamePanel, GAME_PANEL);
+    }
+
+    /**
+     * "Delete player" button action listener.
+     */
+    private final class DeletePlayerButtonListener extends GameListener {
+        /**
+         * Asks for a confirmation. If an answer is "Yes" then player is deleted.
+         */
+        @Override
+        public void actionPerformed(ActionEvent event) {
+            if (getUI().confirm("Are you sure?")) {
+                if (!getGameController().deletePlayer(getMainPanel().getSelectedPlayer())) {
+                    getUI().alert(getGameController().getLastError());
+                }
+                getUI().getMainPanel().flipToPlayerSelection();
+            }
+        }
+    }
+
+    /**
+     * "Select player" button event listener.
+     */
+    private final class SelectPlayerButtonListener extends GameListener {
+        /**
+         * If a player is selected, sets it active. Else shows an error message.
+         */
+        @Override
+        public void actionPerformed(ActionEvent event) {
+            Player selected = getSelectedPlayer();
+            if (getGameController().setActivePlayer(selected)) {
+                flipToGame();
+                gamePanel.start();
+            } else {
+                String error = getGameController().getLastError();
+                getUI().alert(error);
+            }
+        }
+    }
+
+    /**
+     * "Return" button event listener.
+     */
+    private final class ReturnButtonListener extends GameListener {
+        /**
+         * Show game panel, player selection or game selection.
+         * Depends on selection states.
+         */
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (getGameController().isInGame()) {
+                flipToGame();
+            } else if (getGamePanel() == null) {
+                flipToGameSelection();
+            } else {
+                flipToPlayerSelection();
+            }
+        }
+    }
+
+    /**
+     * "New player" button action listener.
+     */
+    private final class NewPlayerButtonListener extends GameListener {
+        /**
+         * Registers a player if the player's name matches the necessary conditions.
+         * Sets player active. If an error occurs, shows a message.
+         */
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            String name = JOptionPane.showInputDialog("Enter your name");
+            if (name == null || name.isEmpty()) {
+                return;
+            }
+            name = name.trim();
+            if (getGameController().register(name)) {
+                getMainPanel().flipToGame();
+                getGamePanel().start();
+            } else {
+                String error = getGameController().getLastError();
+                getUI().alert(error);
+            }
+        }
     }
 }

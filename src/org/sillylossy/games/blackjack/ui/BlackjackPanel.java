@@ -1,15 +1,14 @@
 package org.sillylossy.games.blackjack.ui;
 
 import org.sillylossy.games.blackjack.game.BlackjackGame;
-import org.sillylossy.games.blackjack.ui.listeners.DoubleButtonListener;
-import org.sillylossy.games.blackjack.ui.listeners.HitButtonListener;
-import org.sillylossy.games.blackjack.ui.listeners.StandButtonListener;
 import org.sillylossy.games.common.Main;
 import org.sillylossy.games.common.cards.Card;
 import org.sillylossy.games.common.players.Player;
+import org.sillylossy.games.common.ui.GameListener;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 
 /**
  * Game panel for blackjack.
@@ -115,7 +114,7 @@ public class BlackjackPanel extends org.sillylossy.games.common.ui.BetPanel {
      *
      * @param card taken card
      */
-    public void cardButtonAction(Card card) {
+    private void cardButtonAction(Card card) {
         int height = Main.getUI().getHeight() / 3;
         playersCardsPanel.add(images.getCardImage(card, height));
         updateStatus();
@@ -170,7 +169,7 @@ public class BlackjackPanel extends org.sillylossy.games.common.ui.BetPanel {
     /**
      * Updates player's status in status bar.
      */
-    public void updateStatus() {
+    protected void updateStatus() {
         Player player = gameInstance.getPlayer();
         String status = "Player: " + player.toString() +
                 " bet: " + player.getBet() + "$ " +
@@ -181,7 +180,7 @@ public class BlackjackPanel extends org.sillylossy.games.common.ui.BetPanel {
     /**
      * Processes game results, shows a result message.
      */
-    public void processResults() {
+    protected void processResults() {
         gameInstance.getDealer().play(gameInstance.getDeck());
         displayDealersCards();
         invalidate();
@@ -233,4 +232,50 @@ public class BlackjackPanel extends org.sillylossy.games.common.ui.BetPanel {
         actionButtonsPanel.add(Box.createHorizontalStrut(20));
         return  actionButtonsPanel;
     }
+
+    /**
+     * "Hit" game button action listener.
+     */
+    private final class HitButtonListener extends GameListener {
+        /**
+         * Calls a "take card" game event. Adds a taken card to panel.
+         */
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            cardButtonAction(gameInstance.hitAction());
+        }
+    }
+
+    /**
+     * "Double" game action button action listener.
+     */
+    private final class DoubleButtonListener extends GameListener {
+        /**
+         * Calls "double bet" game event. If player has insufficient score, shows a message.
+         */
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            Card card = gameInstance.doubleAction();
+            if (card == null) {
+                Main.getUI().alert("You don't have enough score to double your bet.");
+                return;
+            }
+            cardButtonAction(card);
+        }
+    }
+
+    /**
+     * "Stand" button action listener.
+     */
+    private final class StandButtonListener extends GameListener {
+        /**
+         * Performs "stand" game action.
+         */
+        @Override
+        public void actionPerformed(ActionEvent event) {
+            gameInstance.standAction();
+            processResults();
+        }
+    }
+
 }

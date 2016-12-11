@@ -1,6 +1,6 @@
 package org.sillylossy.games.common.game;
 
-public interface BetGame extends Game {
+public interface BetGame {
     void betAction(int bet);
 
     int getMaxBet();

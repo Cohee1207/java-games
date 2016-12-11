@@ -7,16 +7,11 @@ import org.sillylossy.games.common.players.Player;
 /**
  * Represents an abstract card game.
  */
-public abstract class CardGame implements Game {
+public abstract class CardGame extends Game {
     /**
      * Active card deck.
      */
     protected Deck deck;
-
-    /**
-     * Player assigned to game session.
-     */
-    protected Player player;
 
     /**
      * Gets an active card deck.
@@ -33,20 +28,14 @@ public abstract class CardGame implements Game {
     }
 
     /**
-     * Gets an active player.
-     */
-    public Player getPlayer() {
-        return player;
-    }
-
-    /**
      * Sets an active player and creates hand for him.
      *
      * @param player player that needs to be activated
      */
+    @Override
     public void setPlayer(Player player) {
+        super.setPlayer(player);
         player.setHand(new Hand());
-        this.player = player;
     }
 
     /**
