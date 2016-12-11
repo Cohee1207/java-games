@@ -12,7 +12,7 @@ public class Deck {
     /**
      * Computed field that contains a deck's length.
      */
-    private static final int deckLength = CardSuit.values().length * CardFace.values().length;
+    private static final int deckLength = CardSuit.values().length * CardRank.values().length;
 
     /**
      * Contains a basic (ordered) deck.
@@ -44,15 +44,15 @@ public class Deck {
     }
 
     /**
-     * Constructs an initial deck creating a card of every card suit and face combination.
+     * Constructs an initial deck creating a card of every card suit and rank combination.
      */
     private static List<Card> createInitial() {
         List<Card> list = new ArrayList<>(deckLength);
         CardSuit[] suits = CardSuit.values();
-        CardFace[] faces = CardFace.values();
+        CardRank[] ranks = CardRank.values();
         for (CardSuit suit : suits) {
-            for (CardFace face : faces) {
-                list.add(new Card(face, suit));
+            for (CardRank rank : ranks) {
+                list.add(new Card(rank, suit));
             }
         }
         return list;

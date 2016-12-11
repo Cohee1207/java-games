@@ -33,7 +33,7 @@ public class BlackjackGame extends CardGame {
         int i = 0;
         int j = 0;
         for (Card card : hand) {
-            switch (card.getCardFace()) {
+            switch (card.getCardRank()) {
                 case ACE:
                     i += 11;
                     j += 1;

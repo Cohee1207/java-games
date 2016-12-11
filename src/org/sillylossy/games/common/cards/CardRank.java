@@ -1,8 +1,8 @@
 package org.sillylossy.games.common.cards;
 
 /**
- * An enumeration of possible card faces (from two to ace).
+ * An enumeration of possible card ranks (from two to ace).
  */
-public enum CardFace {
+public enum CardRank {
     ACE, EIGHT, FIVE, FOUR, JACK, KING, NINE, QUEEN, SEVEN, SIX, TEN, THREE, TWO
 }

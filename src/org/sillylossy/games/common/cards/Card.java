@@ -6,9 +6,9 @@ package org.sillylossy.games.common.cards;
 public class Card {
 
     /**
-     * Contains a card face enum value.
+     * Contains a card rank enum value.
      */
-    private final CardFace cardFace;
+    private final CardRank cardRank;
 
     /**
      * Contains a card suit enum value.
@@ -18,20 +18,20 @@ public class Card {
     /**
      * Sets a fields values from params.
      *
-     * @param cardFace a card's face
+     * @param cardRank a card's rank
      * @param cardSuit a card's suit
      */
-    public Card(CardFace cardFace, CardSuit cardSuit) {
+    public Card(CardRank cardRank, CardSuit cardSuit) {
         super();
-        this.cardFace = cardFace;
+        this.cardRank = cardRank;
         this.cardSuit = cardSuit;
     }
 
     /**
-     * Gets a card's face.
+     * Gets a card's rank.
      */
-    public final CardFace getCardFace() {
-        return cardFace;
+    public final CardRank getCardRank() {
+        return cardRank;
     }
 
     /**
@@ -41,7 +41,7 @@ public class Card {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((cardFace == null) ? 0 : cardFace.hashCode());
+        result = prime * result + ((cardRank == null) ? 0 : cardRank.hashCode());
         result = prime * result + ((cardSuit == null) ? 0 : cardSuit.hashCode());
         return result;
     }
@@ -51,14 +51,14 @@ public class Card {
      */
     @Override
     public String toString() {
-        return String.format("%s_of_%s", getFaceString(), getSuitString());
+        return String.format("%s_of_%s", getRankString(), getSuitString());
     }
 
     /**
-     * Gets a string that represents card face.
+     * Gets a string that represents card rank.
      */
-    private String getFaceString() {
-        switch (cardFace) {
+    private String getRankString() {
+        switch (cardRank) {
             case ACE:
                 return "ace";
             case EIGHT:
@@ -108,4 +108,7 @@ public class Card {
         }
     }
 
+    public CardSuit getCardSuit() {
+        return cardSuit;
+    }
 }
