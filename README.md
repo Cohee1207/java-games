@@ -1,5 +1,7 @@
 # Simple Java games with Swing / AWT GUI.
 
+[![Build Status](https://travis-ci.org/SillyLossy/java-games.png?branch=master)](https://travis-ci.org/SillyLossy/java-games)
+
 ## Available games
 * Blackjack
 
