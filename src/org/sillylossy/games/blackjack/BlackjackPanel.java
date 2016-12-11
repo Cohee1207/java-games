@@ -1,6 +1,5 @@
-package org.sillylossy.games.blackjack.ui;
+package org.sillylossy.games.blackjack;
 
-import org.sillylossy.games.blackjack.game.BlackjackGame;
 import org.sillylossy.games.common.Main;
 import org.sillylossy.games.common.cards.Card;
 import org.sillylossy.games.common.players.Player;

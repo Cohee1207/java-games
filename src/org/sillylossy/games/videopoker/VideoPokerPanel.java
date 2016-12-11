@@ -1,4 +1,4 @@
-package org.sillylossy.games.videopoker.ui;
+package org.sillylossy.games.videopoker;
 
 import org.sillylossy.games.common.ui.BetPanel;
 

@@ -1,12 +1,12 @@
 package org.sillylossy.games.common.ui;
 
-import org.sillylossy.games.blackjack.game.BlackjackGame;
-import org.sillylossy.games.blackjack.ui.BlackjackPanel;
+import org.sillylossy.games.blackjack.BlackjackGame;
+import org.sillylossy.games.blackjack.BlackjackPanel;
 import org.sillylossy.games.common.Main;
 import org.sillylossy.games.common.game.Game;
 import org.sillylossy.games.common.players.Player;
-import org.sillylossy.games.videopoker.game.VideoPokerGame;
-import org.sillylossy.games.videopoker.ui.VideoPokerPanel;
+import org.sillylossy.games.videopoker.VideoPokerGame;
+import org.sillylossy.games.videopoker.VideoPokerPanel;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;

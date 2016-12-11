@@ -1,4 +1,4 @@
-package org.sillylossy.games.videopoker.game;
+package org.sillylossy.games.videopoker;
 
 import org.sillylossy.games.common.cards.Card;
 import org.sillylossy.games.common.cards.CardFace;
@@ -41,5 +41,20 @@ public class VideoPokerGame extends CardGame {
     @Override
     protected void dealCards() {
 
+    }
+
+    @Override
+    public void betAction(int bet) {
+
+    }
+
+    @Override
+    public int getMaxBet() {
+        return 0;
+    }
+
+    @Override
+    public int getMinBet() {
+        return 0;
     }
 }

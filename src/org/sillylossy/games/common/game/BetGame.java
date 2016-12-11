@@ -1,9 +1,9 @@
 package org.sillylossy.games.common.game;
 
-public interface BetGame {
-    void betAction(int bet);
+public abstract class BetGame extends Game {
+    public abstract void betAction(int bet);
 
-    int getMaxBet();
+    public abstract int getMaxBet();
 
-    int getMinBet();
+    public abstract int getMinBet();
 }

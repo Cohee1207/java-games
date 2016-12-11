@@ -2,7 +2,6 @@ package org.sillylossy.games.common.ui;
 
 import org.sillylossy.games.common.Main;
 import org.sillylossy.games.common.game.BetGame;
-import org.sillylossy.games.common.game.Game;
 import org.sillylossy.games.common.players.Player;
 
 import javax.swing.*;
@@ -23,6 +22,7 @@ public abstract class BetPanel extends GamePanel {
      * "Accept" bet button.
      */
     private final JButton btnBet = new JButton("Accept");
+    private final BetGame gameInstance = (BetGame) Main.getGameInstance();
 
     /**
      * Gets selected bet value.
@@ -31,8 +31,6 @@ public abstract class BetPanel extends GamePanel {
         return (int) betSpinner.getValue();
     }
 
-    private final BetGame gameInstance = (BetGame) Main.getGameInstance();
-
     /**
      * Checks player's score. If it's too low, shows a proposal to reset score.
      *
@@ -40,13 +38,7 @@ public abstract class BetPanel extends GamePanel {
      * true if player didn't want to reset score
      */
     private boolean checkScore() {
-        Player player = null;
-        if (gameInstance instanceof Game) {
-            player = ((Game) gameInstance).getPlayer();
-        }
-        if (player == null) {
-            throw new IllegalArgumentException("BetGame implementer should extend Game");
-        }
+        Player player = gameInstance.getPlayer();
         final int LOW_SCORE = 20;
         if (player.getScore() <= LOW_SCORE) {
             if (Main.getUI().confirm(" You almost have 0 $ \n Reset score?")) {

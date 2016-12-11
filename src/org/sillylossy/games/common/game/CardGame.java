@@ -7,7 +7,7 @@ import org.sillylossy.games.common.players.Player;
 /**
  * Represents an abstract card game.
  */
-public abstract class CardGame extends Game {
+public abstract class CardGame extends BetGame {
     /**
      * Active card deck.
      */

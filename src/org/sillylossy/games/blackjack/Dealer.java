@@ -1,6 +1,5 @@
-package org.sillylossy.games.blackjack.players;
+package org.sillylossy.games.blackjack;
 
-import org.sillylossy.games.blackjack.game.BlackjackGame;
 import org.sillylossy.games.common.Main;
 import org.sillylossy.games.common.cards.Card;
 import org.sillylossy.games.common.cards.Deck;
@@ -10,19 +9,19 @@ import org.sillylossy.games.common.players.Participant;
 /**
  * Represents a dealer. Game is played against that participant.
  */
-public class Dealer extends Participant {
+class Dealer extends Participant {
 
     /**
      * Initializes a dealer with new hand.
      */
-    public Dealer() {
+    Dealer() {
         setHand(new Hand());
     }
 
     /**
      * Peeks an open card of dealer.
      */
-    public Card getOpenCard() {
+    Card getOpenCard() {
         return getHand().peek();
     }
 
@@ -31,7 +30,7 @@ public class Dealer extends Participant {
      *
      * @param deck reference to deck object
      */
-    public void play(Deck deck) {
+    void play(Deck deck) {
         final int STOP_VALUE = 17;
         while (((BlackjackGame)Main.getGameInstance()).getValue(getHand().getCards()) < STOP_VALUE) {
             getHand().addCard(deck.draw());

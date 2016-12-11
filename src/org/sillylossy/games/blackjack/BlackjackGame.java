@@ -1,29 +1,35 @@
-package org.sillylossy.games.blackjack.game;
+package org.sillylossy.games.blackjack;
 
-import org.sillylossy.games.blackjack.players.Dealer;
 import org.sillylossy.games.common.Main;
 import org.sillylossy.games.common.cards.Card;
 import org.sillylossy.games.common.cards.Deck;
-import org.sillylossy.games.common.game.BetGame;
 import org.sillylossy.games.common.game.CardGame;
 import org.sillylossy.games.common.game.StatEvent;
 
 /**
  * Blackjack game model.
  */
-public class BlackjackGame extends CardGame implements BetGame {
+public class BlackjackGame extends CardGame {
 
     /**
      * Name of the game.
      */
     public static final String GAME_NAME = "Blackjack";
+    /**
+     * How many value points needed for "blackjack".
+     */
+    private final static int BLACKJACK = 21;
+    /**
+     * A dealer assigned to a game instance.
+     */
+    private final Dealer dealer = new Dealer();
 
     /**
      * Returns a numeric value that represents a hand's value.
      * Cards with number have value of that number. Cards with picture (jack, queen, king)
      * have 10 points value. Ace is valued 1 or 11 (as player wants).
      */
-    public int getValue(Card[] hand) {
+    int getValue(Card[] hand) {
         int i = 0;
         int j = 0;
         for (Card card : hand) {
@@ -95,16 +101,6 @@ public class BlackjackGame extends CardGame implements BetGame {
     }
 
     /**
-     * How many value points needed for "blackjack".
-     */
-    private final static int BLACKJACK = 21;
-
-    /**
-     * A dealer assigned to a game instance.
-     */
-    private final Dealer dealer = new Dealer();
-
-    /**
      * Performs a bet game event. Deals cards to players and sets bet to player account.
      *
      * @param bet bet amount
@@ -120,7 +116,7 @@ public class BlackjackGame extends CardGame implements BetGame {
      *
      * @return taken card or null if player has insufficient score
      */
-    public Card doubleAction() {
+    Card doubleAction() {
         int newBet = player.getBet() * 2;
         if (player.getScore() < newBet) {
             return null;
@@ -148,7 +144,7 @@ public class BlackjackGame extends CardGame implements BetGame {
     /**
      * Gets game's dealer.
      */
-    public Dealer getDealer() {
+    Dealer getDealer() {
         return dealer;
     }
 
@@ -157,7 +153,7 @@ public class BlackjackGame extends CardGame implements BetGame {
      *
      * @return taken card
      */
-    public Card hitAction() {
+    Card hitAction() {
         Card card = deck.draw();
         player.getHand().addCard(card);
         return card;
@@ -250,7 +246,7 @@ public class BlackjackGame extends CardGame implements BetGame {
     /**
      * Performs a stand action.
      */
-    public void standAction() {
+    void standAction() {
         player.setStand(true);
     }
 
