@@ -5,7 +5,9 @@ import org.sillylossy.games.common.game.BetGame;
 import org.sillylossy.games.common.players.Player;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public abstract class BetPanel extends GamePanel {
     /**
@@ -23,6 +25,21 @@ public abstract class BetPanel extends GamePanel {
      */
     private final JButton btnBet = new JButton("Accept");
     private final BetGame gameInstance = (BetGame) Main.getGameInstance();
+
+    /**
+     * Creates constraints for game's components.
+     *
+     * @param y    vertical coordinate
+     * @param fill filling flag
+     * @return component's constraints objects
+     */
+    protected static GridBagConstraints getGBC(int y, int fill) {
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.fill = fill;
+        gbc.gridx = 0;
+        gbc.gridy = y;
+        return gbc;
+    }
 
     /**
      * Gets selected bet value.
@@ -50,6 +67,18 @@ public abstract class BetPanel extends GamePanel {
             }
         }
         return false;
+    }
+
+    /**
+     * Creates label with specified text, white foreground and Arial font.
+     *
+     * @param text text on the label
+     */
+    protected JLabel createLabel(String text) {
+        JLabel lbl = new JLabel(text);
+        lbl.setForeground(new Color(255, 255, 255));
+        lbl.setFont(new Font("Arial", Font.BOLD, 16));
+        return lbl;
     }
 
     protected abstract void setActionButtons(boolean b);
@@ -103,10 +132,12 @@ public abstract class BetPanel extends GamePanel {
         return betPanel;
     }
 
+    protected abstract void initGame();
+
     /**
      * "Accept" bet button action listener.
      */
-    public final class AcceptBetButtonListener extends GameListener {
+    public final class AcceptBetButtonListener implements ActionListener {
         /**
          * Updates UI, calls start game event.
          */
@@ -116,9 +147,10 @@ public abstract class BetPanel extends GamePanel {
             setActionButtons(true);
             gameInstance.betAction(getBetValue());
             updateStatus();
-            getMainPanel().flipToGame();
+            initGame();
+            Main.getUI().getMainPanel().flipToGame();
             redraw();
-            if (getGameInstance().shouldEnd()) {
+            if (Main.getGameInstance().shouldEnd()) {
                 processResults();
             }
         }

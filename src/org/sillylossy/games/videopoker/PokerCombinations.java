@@ -13,34 +13,25 @@ class PokerCombinations {
     private static final int THREE_REPEATS = 2;
 
     private static final int FOUR_REPEATS = 3;
-    private static Map<CardRank, Integer> aceIsLowValues = getAceIsLowValues();
-    private static Comparator<Card> aceIsLowComparator = new Comparator<Card>() {
-        @Override
-        public int compare(Card o1, Card o2) {
-            return Integer.compare(aceIsLowValues.get(o1.getCardRank()), aceIsLowValues.get(o2.getCardRank()));
-        }
-    };
-    private static Map<CardRank, Integer> aceIsHighValues = getAceIsHighValues();
-    private static Comparator<Card> aceIsHighComparator = new Comparator<Card>() {
-        @Override
-        public int compare(Card o1, Card o2) {
-            return Integer.compare(aceIsHighValues.get(o1.getCardRank()), aceIsHighValues.get(o2.getCardRank()));
-        }
-    };
+
+    private static Map<CardRank, Integer> aceIsLowValues = getRankValues(false);
+    private static Comparator<Card> aceIsHighComparator = new CardComparator(getRankValues(true));
+    private static Comparator<Card> aceIsLowComparator = new CardComparator(getRankValues(false));
+    private static Map<CardRank, Integer> aceIsHighValues = getRankValues(true);
     private int numberOfRepeats;
     private EnumSet<CardRank> rankEnumSet;
     private Card[] cards;
-
     private PokerCombinations(int repeats, EnumSet<CardRank> set, Card[] cards) {
         numberOfRepeats = repeats;
         rankEnumSet = set;
         this.cards = cards;
     }
 
-    private static Map<CardRank, Integer> getAceIsLowValues() {
-        Map<CardRank, Integer> values = new HashMap<>(CardRank.values().length);
+    private static Map<CardRank, Integer> getRankValues(boolean aceHigh) {
+        final int HIGH = 14, LOW = 1;
+        Map<CardRank, Integer> values = new EnumMap<>(CardRank.class);
         putCommonValues(values);
-        values.put(CardRank.ACE, 1);
+        values.put(CardRank.ACE, aceHigh ? HIGH : LOW);
         return values;
     }
 
@@ -57,13 +48,6 @@ class PokerCombinations {
         map.put(CardRank.JACK, 11);
         map.put(CardRank.QUEEN, 12);
         map.put(CardRank.KING, 13);
-    }
-
-    private static Map<CardRank, Integer> getAceIsHighValues() {
-        Map<CardRank, Integer> values = new HashMap<>(CardRank.values().length);
-        putCommonValues(values);
-        values.put(CardRank.ACE, 14);
-        return values;
     }
 
     static PokerCombinations getCombinations(Card[] cards) {
@@ -130,6 +114,19 @@ class PokerCombinations {
 
     boolean hasFullHouse() {
         return numberOfRepeats == FOUR_REPEATS && rankEnumSet.size() == 2;
+    }
+
+    private static final class CardComparator implements Comparator<Card> {
+        Map<CardRank, Integer> values;
+
+        CardComparator(Map<CardRank, Integer> map) {
+            this.values = map;
+        }
+
+        @Override
+        public int compare(Card o1, Card o2) {
+            return Integer.compare(values.get(o1.getCardRank()), values.get(o2.getCardRank()));
+        }
     }
 
 }

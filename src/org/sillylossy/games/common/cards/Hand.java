@@ -36,6 +36,11 @@ public class Hand {
         return cards.toArray(new Card[cards.size()]);
     }
 
+    public void replaceCard(Card oldCard, Card newCard) {
+        cards.remove(oldCard);
+        cards.add(newCard);
+    }
+
     /**
      * Returns a top card from a hand.
      *

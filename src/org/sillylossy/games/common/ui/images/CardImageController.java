@@ -4,7 +4,6 @@ import org.sillylossy.games.common.cards.Card;
 import org.sillylossy.games.common.cards.Deck;
 
 import javax.imageio.ImageIO;
-import javax.swing.*;
 import java.awt.*;
 import java.io.InputStream;
 import java.util.Map;
@@ -12,7 +11,7 @@ import java.util.Map;
 /**
  * Utility that controls image files.
  */
-public class ImageController {
+class CardImageController {
 
     /**
      * Image file extension.
@@ -32,7 +31,7 @@ public class ImageController {
     /**
      * Creates controller and loads images.
      */
-    public ImageController() {
+    CardImageController() {
         loadCardImages();
     }
 
@@ -42,8 +41,8 @@ public class ImageController {
      * @param height desired image height
      * @return UI object with back image of desired height
      */
-    public JLabel getBackImage(int height) {
-        return new JLabel(new ImageIcon(cardBackImage.getScaledInstance(-1, height, Image.SCALE_SMOOTH)));
+    Image getBackImage(int height) {
+        return cardBackImage.getScaledInstance(-1, height, Image.SCALE_SMOOTH);
     }
 
     /**
@@ -53,8 +52,8 @@ public class ImageController {
      * @param height desired image height
      * @return UI object with card image of desired height
      */
-    public JLabel getCardImage(Card card, int height) {
-        return new JLabel(new ImageIcon(cardImages.get(card).getScaledInstance(-1, height, Image.SCALE_SMOOTH)));
+    Image getCardImage(Card card, int height) {
+        return cardImages.get(card).getScaledInstance(-1, height, Image.SCALE_SMOOTH);
     }
 
     /**

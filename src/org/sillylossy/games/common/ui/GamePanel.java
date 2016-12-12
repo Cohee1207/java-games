@@ -1,9 +1,6 @@
 package org.sillylossy.games.common.ui;
 
-import org.sillylossy.games.common.ui.images.ImageController;
-
 import javax.swing.*;
-import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
@@ -13,34 +10,27 @@ import java.awt.event.ComponentEvent;
  */
 public abstract class GamePanel extends JPanel {
 
+    protected final JPanel gameArea = new JPanel();
     /**
-     * An active images controller.
+     * Label with games status (current player, hand value, etc).
      */
-    protected final ImageController images = new ImageController();
+    protected final JLabel lblStatus = new JLabel();
 
     /**
      * Constructs a game panel - sets listener and colors.
      */
     GamePanel() {
         addComponentListener(new ResizePanelListener());
-        setBorder(new LineBorder(Color.GRAY, 1, true));
         gameArea.setBackground(new Color(34, 139, 34));
         setLayout(new BorderLayout());
         add(createStatusBar(), BorderLayout.SOUTH);
         add(gameArea, BorderLayout.CENTER);
     }
 
-    protected final JPanel gameArea = new JPanel();
-
     /**
      * Redraws a game panel.
      */
     public abstract void redraw();
-
-    /**
-     * Label with games status (current player, hand value, etc).
-     */
-    protected final JLabel lblStatus = new JLabel();
 
     /**
      * Creates status bar with status label.

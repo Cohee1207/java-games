@@ -154,14 +154,14 @@ public class GameInterface extends JFrame {
     /**
      * "Statistics" menu item action listener.
      */
-    public final class StatMenuItemListener extends GameListener {
+    public final class StatMenuItemListener implements ActionListener {
         /**
          * Gets a statistics map from a game controller and forms a table model from it.
          */
         @Override
         public void actionPerformed(ActionEvent e) {
             getMainPanel().flipToStatistics();
-            Map<Player, Statistics> stats = getGameController().getStatistics();
+            Map<Player, Statistics> stats = Main.getGameController().getStatistics();
             int count = stats.size();
             Player[] players = stats.keySet().toArray(new Player[count]);
             String[] labels = new String[]{"Player", "Total games", "Games won", "Games lost", "Games drawn"};
