@@ -6,9 +6,22 @@ import org.sillylossy.games.common.cards.Card;
 import org.sillylossy.games.common.cards.CardRank;
 import org.sillylossy.games.common.cards.CardSuit;
 
+import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
+
 import static org.sillylossy.games.videopoker.PokerCombinations.getCombinations;
 
 public class VideoPokerGameTest {
+    private static void shuffleArray(Object[] array) {
+        Random rnd = ThreadLocalRandom.current();
+        for (int i = 0; i < array.length - 1; ++i) {
+            int index = rnd.nextInt(i + 1);
+            Object o = array[index];
+            array[index] = array[i];
+            array[i] = o;
+        }
+    }
+
     @Test
     public void testOnePairDetection() throws Exception {
         Card[] cards = new Card[]{
@@ -18,6 +31,7 @@ public class VideoPokerGameTest {
                 new Card(CardRank.FIVE, CardSuit.SPADES),
                 new Card(CardRank.KING, CardSuit.DIAMONDS)
         };
+        shuffleArray(cards);
         Assert.assertTrue(getCombinations(cards).hasOnePair());
     }
 
@@ -30,6 +44,7 @@ public class VideoPokerGameTest {
                 new Card(CardRank.FIVE, CardSuit.SPADES),
                 new Card(CardRank.KING, CardSuit.DIAMONDS)
         };
+        shuffleArray(cards);
         Assert.assertTrue(getCombinations(cards).hasThree());
     }
 
@@ -42,6 +57,7 @@ public class VideoPokerGameTest {
                 new Card(CardRank.ACE, CardSuit.SPADES),
                 new Card(CardRank.KING, CardSuit.DIAMONDS)
         };
+        shuffleArray(cards);
         Assert.assertTrue(getCombinations(cards).hasFour());
     }
 
@@ -54,6 +70,7 @@ public class VideoPokerGameTest {
                 new Card(CardRank.KING, CardSuit.SPADES),
                 new Card(CardRank.KING, CardSuit.DIAMONDS)
         };
+        shuffleArray(cards);
         Assert.assertTrue(getCombinations(cards).hasFullHouse());
     }
 
@@ -66,6 +83,7 @@ public class VideoPokerGameTest {
                 new Card(CardRank.EIGHT, CardSuit.SPADES),
                 new Card(CardRank.KING, CardSuit.DIAMONDS)
         };
+        shuffleArray(cards);
         Assert.assertTrue(getCombinations(cards).hasTwoPair());
     }
 
@@ -78,6 +96,7 @@ public class VideoPokerGameTest {
                 new Card(CardRank.EIGHT, CardSuit.CLUBS),
                 new Card(CardRank.QUEEN, CardSuit.CLUBS)
         };
+        shuffleArray(cards);
         Assert.assertTrue(getCombinations(cards).hasFlush());
     }
 
@@ -90,6 +109,7 @@ public class VideoPokerGameTest {
                 new Card(CardRank.JACK, CardSuit.SPADES),
                 new Card(CardRank.TEN, CardSuit.DIAMONDS)
         };
+        shuffleArray(cards);
         Assert.assertTrue(getCombinations(cards).hasStraight());
     }
 
@@ -102,6 +122,7 @@ public class VideoPokerGameTest {
                 new Card(CardRank.FIVE, CardSuit.DIAMONDS),
                 new Card(CardRank.SIX, CardSuit.DIAMONDS)
         };
+        shuffleArray(cards);
         Assert.assertTrue(getCombinations(cards).hasStraightFlush());
     }
 
@@ -114,6 +135,7 @@ public class VideoPokerGameTest {
                 new Card(CardRank.JACK, CardSuit.CLUBS),
                 new Card(CardRank.TEN, CardSuit.CLUBS)
         };
+        shuffleArray(cards);
         Assert.assertTrue(getCombinations(cards).hasRoyalStraightFlush());
     }
 }
