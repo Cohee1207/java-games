@@ -32,7 +32,7 @@ public class VideoPokerGameTest {
                 new Card(CardRank.KING, CardSuit.DIAMONDS)
         };
         shuffleArray(cards);
-        Assert.assertTrue(getCombinations(cards).hasOnePair());
+        Assert.assertTrue(getCombinations(cards, CardRank.TWO).hasOnePair());
     }
 
     @Test
@@ -45,7 +45,7 @@ public class VideoPokerGameTest {
                 new Card(CardRank.KING, CardSuit.DIAMONDS)
         };
         shuffleArray(cards);
-        Assert.assertTrue(getCombinations(cards).hasThree());
+        Assert.assertTrue(getCombinations(cards, CardRank.TWO).hasThree());
     }
 
     @Test
@@ -58,7 +58,7 @@ public class VideoPokerGameTest {
                 new Card(CardRank.KING, CardSuit.DIAMONDS)
         };
         shuffleArray(cards);
-        Assert.assertTrue(getCombinations(cards).hasFour());
+        Assert.assertTrue(getCombinations(cards, CardRank.TWO).hasFour());
     }
 
     @Test
@@ -71,7 +71,7 @@ public class VideoPokerGameTest {
                 new Card(CardRank.KING, CardSuit.DIAMONDS)
         };
         shuffleArray(cards);
-        Assert.assertTrue(getCombinations(cards).hasFullHouse());
+        Assert.assertTrue(getCombinations(cards, CardRank.TWO).hasFullHouse());
     }
 
     @Test
@@ -84,7 +84,7 @@ public class VideoPokerGameTest {
                 new Card(CardRank.KING, CardSuit.DIAMONDS)
         };
         shuffleArray(cards);
-        Assert.assertTrue(getCombinations(cards).hasTwoPair());
+        Assert.assertTrue(getCombinations(cards, CardRank.TWO).hasTwoPair());
     }
 
     @Test
@@ -97,7 +97,7 @@ public class VideoPokerGameTest {
                 new Card(CardRank.QUEEN, CardSuit.CLUBS)
         };
         shuffleArray(cards);
-        Assert.assertTrue(getCombinations(cards).hasFlush());
+        Assert.assertTrue(getCombinations(cards, CardRank.TWO).hasFlush());
     }
 
     @Test
@@ -110,7 +110,16 @@ public class VideoPokerGameTest {
                 new Card(CardRank.TEN, CardSuit.DIAMONDS)
         };
         shuffleArray(cards);
-        Assert.assertTrue(getCombinations(cards).hasStraight());
+        Assert.assertTrue(getCombinations(cards, CardRank.TWO).hasStraight());
+        cards = new Card[]{
+                new Card(CardRank.EIGHT, CardSuit.CLUBS),
+                new Card(CardRank.TWO, CardSuit.DIAMONDS),
+                new Card(CardRank.QUEEN, CardSuit.HEARTS),
+                new Card(CardRank.ACE, CardSuit.SPADES),
+                new Card(CardRank.TEN, CardSuit.DIAMONDS)
+        };
+        shuffleArray(cards);
+        Assert.assertFalse(getCombinations(cards, CardRank.TWO).hasStraight());
     }
 
     @Test
@@ -123,11 +132,11 @@ public class VideoPokerGameTest {
                 new Card(CardRank.SIX, CardSuit.DIAMONDS)
         };
         shuffleArray(cards);
-        Assert.assertTrue(getCombinations(cards).hasStraightFlush());
+        Assert.assertTrue(getCombinations(cards, CardRank.TWO).hasStraightFlush());
     }
 
     @Test
-    public void testRoyalStraightFlushDetection() throws Exception {
+    public void testRoyalFlushDetection() throws Exception {
         Card[] cards = new Card[]{
                 new Card(CardRank.ACE, CardSuit.CLUBS),
                 new Card(CardRank.KING, CardSuit.CLUBS),
@@ -136,6 +145,6 @@ public class VideoPokerGameTest {
                 new Card(CardRank.TEN, CardSuit.CLUBS)
         };
         shuffleArray(cards);
-        Assert.assertTrue(getCombinations(cards).hasRoyalStraightFlush());
+        Assert.assertTrue(getCombinations(cards, CardRank.TWO).hasRoyalFlush());
     }
 }

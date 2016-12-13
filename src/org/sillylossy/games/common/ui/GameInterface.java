@@ -20,14 +20,9 @@ import java.util.Map;
 public class GameInterface extends JFrame {
 
     /**
-     * A default game window size.
-     */
-    private static final Dimension defaultWindowSize = new Dimension(800, 600);
-
-    /**
      * A minimal window size.
      */
-    private static final Dimension minWindowSize = new Dimension(640, 520);
+    private static final Dimension minWindowSize = new Dimension(700, 554);
 
     /**
      * Main panel of GUI.
@@ -46,7 +41,7 @@ public class GameInterface extends JFrame {
         setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         mainPanel = new MainPanel();
         setContentPane(mainPanel);
-        setSize(defaultWindowSize);
+        setSize(minWindowSize);
         setLocationRelativeTo(null);
         setVisible(true);
     }
@@ -190,7 +185,9 @@ public class GameInterface extends JFrame {
          */
         @Override
         public void windowStateChanged(WindowEvent e) {
-            mainPanel.getGamePanel().redraw();
+            if (mainPanel.getGamePanel() != null) {
+                mainPanel.getGamePanel().redraw();
+            }
         }
     }
 

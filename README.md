@@ -4,9 +4,9 @@
 
 ## Available games
 * Blackjack
+* Video poker
 
 ## Planned games
-* Video poker
 * Crazy eights
 * "Durak"
 * Roulette

@@ -11,6 +11,7 @@ import java.awt.event.ComponentEvent;
 public abstract class GamePanel extends JPanel {
 
     protected final JPanel gameArea = new JPanel();
+
     /**
      * Label with games status (current player, hand value, etc).
      */
@@ -31,6 +32,8 @@ public abstract class GamePanel extends JPanel {
      * Redraws a game panel.
      */
     public abstract void redraw();
+
+    public abstract void clear();
 
     /**
      * Creates status bar with status label.

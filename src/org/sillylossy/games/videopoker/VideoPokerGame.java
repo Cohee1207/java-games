@@ -1,12 +1,37 @@
 package org.sillylossy.games.videopoker;
 
+import org.sillylossy.games.common.Main;
 import org.sillylossy.games.common.cards.Card;
+import org.sillylossy.games.common.cards.CardRank;
 import org.sillylossy.games.common.cards.Deck;
 import org.sillylossy.games.common.game.CardGame;
+import org.sillylossy.games.videopoker.PokerCombinations.Combination;
+
+import java.util.EnumMap;
+import java.util.Map;
+
+import static org.sillylossy.games.videopoker.PokerCombinations.combinationStringMap;
 
 public class VideoPokerGame extends CardGame {
 
-    public static final String GAME_NAME = "Video Poker";
+    public static final String GAME_NAME = "Video poker";
+
+    private Map<Combination, Integer> payTable;
+
+    private Map<Combination, Integer> createPayTable(int bet) {
+        Map<Combination, Integer> table = new EnumMap<>(Combination.class);
+        table.put(Combination.HIGH_CARD, 0);
+        table.put(Combination.ONE_PAIR, bet);
+        table.put(Combination.TWO_PAIR, bet * 2);
+        table.put(Combination.THREE_CARDS, bet * 3);
+        table.put(Combination.STRAIGHT, bet * 4);
+        table.put(Combination.FLUSH, bet * 6);
+        table.put(Combination.FULL_HOUSE, bet * 9);
+        table.put(Combination.FOUR_CARDS, bet * 25);
+        table.put(Combination.STRAIGHT_FLUSH, bet * 50);
+        table.put(Combination.ROYAL_FLUSH, bet * 250);
+        return table;
+    }
 
     @Override
     public String getGameName() {
@@ -18,9 +43,57 @@ public class VideoPokerGame extends CardGame {
         return false;
     }
 
-    @Override
     public String getResult() {
-        return null;
+        String result = "";
+        final CardRank MIN_CARD = CardRank.JACK;
+        int pay = 0;
+        Card[] cards = getPlayer().getHand().getCards();
+        PokerCombinations combinations = PokerCombinations.getCombinations(cards, MIN_CARD);
+        switch (combinations.getBestCombination()) {
+            case HIGH_CARD:
+                result = combinationStringMap.get(Combination.HIGH_CARD) + ". You've lost your bet";
+                break;
+            case ONE_PAIR:
+                pay = payTable.get(Combination.ONE_PAIR);
+                result = combinationStringMap.get(Combination.ONE_PAIR) + ". You keep your bet";
+                break;
+            case TWO_PAIR:
+                pay = payTable.get(Combination.TWO_PAIR);
+                result = combinationStringMap.get(Combination.TWO_PAIR) + ". You've won " + pay + "$";
+                break;
+            case THREE_CARDS:
+                pay = payTable.get(Combination.THREE_CARDS);
+                result = combinationStringMap.get(Combination.THREE_CARDS) + ". You've won " + pay + "$";
+                break;
+            case STRAIGHT:
+                pay = payTable.get(Combination.STRAIGHT);
+                result = combinationStringMap.get(Combination.STRAIGHT) + ". You've won " + pay + "$";
+                break;
+            case FLUSH:
+                pay = payTable.get(Combination.FLUSH);
+                result = combinationStringMap.get(Combination.FLUSH) + ". You've won " + pay + "$";
+                break;
+            case FULL_HOUSE:
+                pay = payTable.get(Combination.FOUR_CARDS);
+                result = combinationStringMap.get(Combination.FULL_HOUSE) + ". You've won " + pay + "$";
+                break;
+            case FOUR_CARDS:
+                pay = payTable.get(Combination.FOUR_CARDS);
+                result = combinationStringMap.get(Combination.FOUR_CARDS) + ". You've won " + pay + "$";
+                break;
+            case STRAIGHT_FLUSH:
+                pay = payTable.get(Combination.STRAIGHT_FLUSH);
+                result = combinationStringMap.get(Combination.STRAIGHT_FLUSH) + ". You've won " + pay + "$";
+                break;
+            case ROYAL_FLUSH:
+                pay = payTable.get(Combination.ROYAL_FLUSH);
+                result = combinationStringMap.get(Combination.ROYAL_FLUSH) + ". You've won " + pay + "$";
+                break;
+        }
+        player.increaseScore(pay);
+        reset();
+        Main.saveData();
+        return result;
     }
 
     @Override
@@ -42,6 +115,8 @@ public class VideoPokerGame extends CardGame {
     @Override
     public void betAction(int bet) {
         player.setBet(bet);
+        payTable = createPayTable(bet);
+        player.decreaseScore(bet);
         dealCards();
     }
 
@@ -52,7 +127,7 @@ public class VideoPokerGame extends CardGame {
 
     @Override
     public int getMinBet() {
-        return (int) Math.ceil(player.getScore() / 50d);
+        return player.getScore() / 50;
     }
 
     Card changeCard(Card card) {
@@ -61,5 +136,8 @@ public class VideoPokerGame extends CardGame {
         return newCard;
     }
 
+    Map<Combination, Integer> getPayTable() {
+        return payTable;
+    }
 }
 

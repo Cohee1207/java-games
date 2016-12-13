@@ -10,6 +10,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Game panel for blackjack.
@@ -84,7 +85,8 @@ public class BlackjackPanel extends org.sillylossy.games.common.ui.BetPanel {
     /**
      * Clear and revalidate card panels.
      */
-    private void clearCards() {
+    @Override
+    public void clear() {
         playersCardsPanel.removeAll();
         playersCardsImages.clear();
         dealersCardsPanel.removeAll();
@@ -135,10 +137,18 @@ public class BlackjackPanel extends org.sillylossy.games.common.ui.BetPanel {
 
     /**
      * Displays dealer's cards.
+     * @param play cards taken by dealer
      */
-    private void displayDealersCards() {
+    private void displayDealersCards(List<Card> play) {
         for (CardImage image : dealersCardsImages) {
-            image.updateIcon();
+            if (image.isFlipped()) {
+                image.flip();
+            }
+        }
+        for (Card card : play) {
+            CardImage image = new CardImage(card, false);
+            dealersCardsImages.add(image);
+            dealersCardsPanel.add(image.getLabel());
         }
     }
 
@@ -162,12 +172,10 @@ public class BlackjackPanel extends org.sillylossy.games.common.ui.BetPanel {
      * Processes game results, shows a result message.
      */
     protected void processResults() {
-        gameInstance.getDealer().play(gameInstance.getDeck());
-        displayDealersCards();
-        invalidate();
+        displayDealersCards(gameInstance.getDealer().play(gameInstance.getDeck()));
         Main.getUI().alert(gameInstance.getResult());
-        flipToBets();
-        clearCards();
+        clear();
+        start();
     }
 
     /**
@@ -210,7 +218,6 @@ public class BlackjackPanel extends org.sillylossy.games.common.ui.BetPanel {
         actionButtonsPanel.add(btnStand);
         btnDouble.addActionListener(new DoubleButtonListener());
         actionButtonsPanel.add(btnDouble);
-        actionButtonsPanel.add(Box.createHorizontalStrut(20));
         return  actionButtonsPanel;
     }
 

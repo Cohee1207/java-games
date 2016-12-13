@@ -6,6 +6,9 @@ import org.sillylossy.games.common.cards.Deck;
 import org.sillylossy.games.common.cards.Hand;
 import org.sillylossy.games.common.players.Participant;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Represents a dealer. Game is played against that participant.
  */
@@ -30,10 +33,14 @@ class Dealer extends Participant {
      *
      * @param deck reference to deck object
      */
-    void play(Deck deck) {
+    List<Card> play(Deck deck) {
         final int STOP_VALUE = 17;
+        List<Card> taken = new ArrayList<>();
         while (((BlackjackGame)Main.getGameInstance()).getValue(getHand().getCards()) < STOP_VALUE) {
-            getHand().addCard(deck.draw());
+            Card card = deck.draw();
+            getHand().addCard(card);
+            taken.add(card);
         }
+        return taken;
     }
 }

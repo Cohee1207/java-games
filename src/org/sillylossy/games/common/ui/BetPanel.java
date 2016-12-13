@@ -117,6 +117,7 @@ public abstract class BetPanel extends GamePanel {
     protected JPanel createActionsPanel() {
         JPanel actionPanel = new JPanel();
         actionPanel.add(createGameActions());
+        actionPanel.add(Box.createHorizontalStrut(20));
         actionPanel.add(createBetPanel());
         return actionPanel;
     }
