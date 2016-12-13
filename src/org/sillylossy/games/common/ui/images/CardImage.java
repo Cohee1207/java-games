@@ -12,8 +12,8 @@ public class CardImage {
      * An active images controller.
      */
     private static final CardImageController images = new CardImageController();
+    private final JLabel label;
     private Card card;
-    private JLabel label;
     private boolean isFlipped = false;
 
     public CardImage(Card card, boolean flipOnClick) {

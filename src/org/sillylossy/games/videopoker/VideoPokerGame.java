@@ -20,7 +20,7 @@ public class VideoPokerGame extends CardGame {
 
     private Map<Combination, Integer> createPayTable(int bet) {
         Map<Combination, Integer> table = new EnumMap<>(Combination.class);
-        table.put(Combination.HIGH_CARD, 0);
+        table.put(Combination.OTHER, 0);
         table.put(Combination.ONE_PAIR, bet);
         table.put(Combination.TWO_PAIR, bet * 2);
         table.put(Combination.THREE_CARDS, bet * 3);
@@ -50,8 +50,8 @@ public class VideoPokerGame extends CardGame {
         Card[] cards = getPlayer().getHand().getCards();
         PokerCombinations combinations = PokerCombinations.getCombinations(cards, MIN_CARD);
         switch (combinations.getBestCombination()) {
-            case HIGH_CARD:
-                result = combinationStringMap.get(Combination.HIGH_CARD) + ". You've lost your bet";
+            case OTHER:
+                result = combinationStringMap.get(Combination.OTHER) + ". You've lost your bet";
                 break;
             case ONE_PAIR:
                 pay = payTable.get(Combination.ONE_PAIR);
@@ -96,11 +96,15 @@ public class VideoPokerGame extends CardGame {
         return result;
     }
 
+    void discard() {
+        player.increaseScore(player.getBet());
+        reset();
+    }
+
     @Override
     public void reset() {
         player.getHand().clear();
         player.setBet(0);
-        player.setStand(false);
     }
 
     @Override

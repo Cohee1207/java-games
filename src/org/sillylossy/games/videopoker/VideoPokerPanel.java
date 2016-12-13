@@ -23,22 +23,13 @@ public class VideoPokerPanel extends BetPanel {
     private static final String PLAY_BUTTON_TEXT = "Play";
     private static final String NEW_GAME_BUTTON_TEXT = "New game";
     private final JButton btnPlay = new JButton();
-    private List<CardImage> cardImages = new ArrayList<>();
-    private JPanel cardsPanel = new JPanel();
-    private JTable payTable = new JTable();
-    private JScrollPane payTablePane = new JScrollPane(payTable);
-    private JLabel lblHint = createLabel("Click on cards you want to replace");
-    private ActionListener newGameButtonListener = new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            clear();
-            start();
-            btnPlay.removeActionListener(this);
-            btnPlay.setText(PLAY_BUTTON_TEXT);
-            btnPlay.addActionListener(playButtonListener);
-        }
-    };
-    private ActionListener playButtonListener = new ActionListener() {
+    private final JButton btnDiscard = new JButton("Discard");
+    private final List<CardImage> cardImages = new ArrayList<>();
+    private final JPanel cardsPanel = new JPanel();
+    private final JTable payTable = new JTable();
+    private final JScrollPane payTablePane = new JScrollPane(payTable);
+    private final JLabel lblHint = createLabel("Click on cards you want to replace");
+    private final ActionListener playButtonListener = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
             for (CardImage image : cardImages) {
@@ -48,6 +39,16 @@ public class VideoPokerPanel extends BetPanel {
                 }
             }
             processResults();
+        }
+    };
+    private final ActionListener newGameButtonListener = new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            clear();
+            start();
+            btnPlay.removeActionListener(this);
+            btnPlay.setText(PLAY_BUTTON_TEXT);
+            btnPlay.addActionListener(playButtonListener);
         }
     };
 
@@ -74,7 +75,7 @@ public class VideoPokerPanel extends BetPanel {
             vector[i][1] = table.get(entry.getKey());
             ++i;
         }
-        return new DefaultTableModel(vector, new String[]{"Combination", "Pay"});
+        return new DefaultTableModel(vector, new String[]{"Combination", "Payout"});
     }
 
     /**
@@ -118,16 +119,18 @@ public class VideoPokerPanel extends BetPanel {
     }
 
     @Override
-    public void processResults() {
+    protected void processResults() {
         lblHint.setText(getGame().getResult());
         btnPlay.setText(NEW_GAME_BUTTON_TEXT);
         btnPlay.removeActionListener(playButtonListener);
         btnPlay.addActionListener(newGameButtonListener);
+        btnDiscard.setEnabled(false);
     }
 
     @Override
-    public void setActionButtons(boolean b) {
+    protected void setActionButtons(boolean b) {
         btnPlay.setEnabled(b);
+        btnDiscard.setEnabled(b);
         payTablePane.setVisible(b);
         lblHint.setVisible(b);
         cardsPanel.setVisible(b);
@@ -136,9 +139,11 @@ public class VideoPokerPanel extends BetPanel {
     @Override
     protected JPanel createGameActions() {
         JPanel actions = new JPanel();
+        btnDiscard.addActionListener(new DiscardButtonAction());
         btnPlay.addActionListener(playButtonListener);
         btnPlay.setText(PLAY_BUTTON_TEXT);
         actions.add(btnPlay);
+        actions.add(btnDiscard);
         return actions;
     }
 
@@ -150,6 +155,14 @@ public class VideoPokerPanel extends BetPanel {
             cardsPanel.add(image.getLabel());
         }
         payTable.setModel(createTableModel());
-        btnPlay.setText("Play");
+    }
+
+    private class DiscardButtonAction implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            getGame().discard();
+            clear();
+            start();
+        }
     }
 }

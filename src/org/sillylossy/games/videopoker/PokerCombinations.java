@@ -8,20 +8,18 @@ import java.util.*;
 
 class PokerCombinations {
 
+    static final Map<Combination, String> combinationStringMap = getCombinationStrings();
     private static final int PAIR_REPEATS = 1;
-
     private static final int THREE_REPEATS = 2;
-
     private static final int FOUR_REPEATS = 3;
-    static Map<Combination, String> combinationStringMap = getCombinationStrings();
-    private static Map<CardRank, Integer> aceIsLowValues = getRankValues(false);
-    private static Comparator<Card> aceIsHighComparator = new CardComparator(getRankValues(true));
-    private static Comparator<Card> aceIsLowComparator = new CardComparator(getRankValues(false));
-    private static Map<CardRank, Integer> aceIsHighValues = getRankValues(true);
-    private CardRank minPairRank;
-    private int numberOfRepeats;
-    private EnumSet<CardRank> rankEnumSet;
-    private Card[] cards;
+    private static final Map<CardRank, Integer> aceIsLowValues = getRankValues(false);
+    private static final Comparator<Card> aceIsHighComparator = new CardComparator(getRankValues(true));
+    private static final Comparator<Card> aceIsLowComparator = new CardComparator(getRankValues(false));
+    private static final Map<CardRank, Integer> aceIsHighValues = getRankValues(true);
+    private final CardRank minPairRank;
+    private final int numberOfRepeats;
+    private final EnumSet<CardRank> rankEnumSet;
+    private final Card[] cards;
 
     private PokerCombinations(int repeats, EnumSet<CardRank> set, Card[] cards, CardRank minPairRank) {
         numberOfRepeats = repeats;
@@ -32,7 +30,7 @@ class PokerCombinations {
 
     private static Map<Combination, String> getCombinationStrings() {
         EnumMap<Combination, String> map = new EnumMap<>(Combination.class);
-        map.put(Combination.HIGH_CARD, "High card");
+        map.put(Combination.OTHER, "Other");
         map.put(Combination.ONE_PAIR, "One pair (jacks or better)");
         map.put(Combination.TWO_PAIR, "Two pairs");
         map.put(Combination.THREE_CARDS, "Three of kind");
@@ -81,13 +79,8 @@ class PokerCombinations {
         return new PokerCombinations(repeats, pairsSet, cards, minPairRank);
     }
 
-    String getString(Combination combination) {
-        String string = combinationStringMap.get(combination);
-        return string != null ? string : "Unknown";
-    }
-
     Combination getBestCombination() {
-        Combination best = Combination.HIGH_CARD;
+        Combination best = Combination.OTHER;
         if (hasOnePair()) {
             best = Combination.ONE_PAIR;
         }
@@ -176,11 +169,11 @@ class PokerCombinations {
     }
 
     enum Combination {
-        HIGH_CARD, ONE_PAIR, TWO_PAIR, THREE_CARDS, STRAIGHT, FLUSH, FULL_HOUSE, FOUR_CARDS, STRAIGHT_FLUSH, ROYAL_FLUSH
+        OTHER, ONE_PAIR, TWO_PAIR, THREE_CARDS, STRAIGHT, FLUSH, FULL_HOUSE, FOUR_CARDS, STRAIGHT_FLUSH, ROYAL_FLUSH
     }
 
     private static final class CardComparator implements Comparator<Card> {
-        Map<CardRank, Integer> values;
+        final Map<CardRank, Integer> values;
 
         CardComparator(Map<CardRank, Integer> map) {
             this.values = map;

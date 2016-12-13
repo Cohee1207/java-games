@@ -45,8 +45,8 @@ public class BlackjackPanel extends org.sillylossy.games.common.ui.BetPanel {
      * "Stand" game button.
      */
     private final JButton btnStand = new JButton("Stand");
-    private ArrayList<CardImage> playersCardsImages = new ArrayList<>();
-    private ArrayList<CardImage> dealersCardsImages = new ArrayList<>();
+    private final ArrayList<CardImage> playersCardsImages = new ArrayList<>();
+    private final ArrayList<CardImage> dealersCardsImages = new ArrayList<>();
     /**
      * Creates a game area on panel with all needed visuals.
      */
