@@ -21,7 +21,6 @@ import static org.sillylossy.games.videopoker.PokerCombinations.combinationStrin
 public class VideoPokerPanel extends BetPanel {
 
     private static final String PLAY_BUTTON_TEXT = "Play";
-    private static final String NEW_GAME_BUTTON_TEXT = "New game";
     private final JButton btnPlay = new JButton();
     private final JButton btnDiscard = new JButton("Discard");
     private final List<CardImage> cardImages = new ArrayList<>();
@@ -29,18 +28,6 @@ public class VideoPokerPanel extends BetPanel {
     private final JTable payTable = new JTable();
     private final JScrollPane payTablePane = new JScrollPane(payTable);
     private final JLabel lblHint = createLabel("Click on cards you want to replace");
-    private final ActionListener playButtonListener = new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            for (CardImage image : cardImages) {
-                if (image.isFlipped()) {
-                    image.setCard(getGame().changeCard(image.getCard()));
-                    image.flip();
-                }
-            }
-            processResults();
-        }
-    };
     private final ActionListener newGameButtonListener = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -51,6 +38,19 @@ public class VideoPokerPanel extends BetPanel {
             btnPlay.addActionListener(playButtonListener);
         }
     };
+    private final ActionListener playButtonListener = new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            for (CardImage image : cardImages) {
+                if (image.isFlipped()) {
+                    image.setCard(getGame().changeCard(image.getCard()));
+                    image.flip();
+                    image.updateIcon();
+                }
+            }
+            processResults();
+        }
+    };
 
     public VideoPokerPanel() {
         payTable.setEnabled(false);
@@ -59,7 +59,7 @@ public class VideoPokerPanel extends BetPanel {
         gameArea.add(lblHint, getGBC(1, GridBagConstraints.VERTICAL));
         gameArea.add(cardsPanel, getGBC(2, GridBagConstraints.HORIZONTAL));
         gameArea.add(createActionsPanel(), getGBC(3, GridBagConstraints.BOTH));
-        cardsPanel.setBackground(new Color(34, 139, 34));
+        cardsPanel.setBackground(BACKGROUND_COLOR);
     }
 
     private VideoPokerGame getGame() {
@@ -129,8 +129,8 @@ public class VideoPokerPanel extends BetPanel {
 
     @Override
     protected void setActionButtons(boolean b) {
-        btnPlay.setEnabled(b);
-        btnDiscard.setEnabled(b);
+        btnPlay.setVisible(b);
+        btnDiscard.setVisible(b);
         payTablePane.setVisible(b);
         lblHint.setVisible(b);
         cardsPanel.setVisible(b);

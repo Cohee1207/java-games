@@ -8,7 +8,10 @@ import javax.swing.*;
 import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowStateListener;
 import java.util.Map;
 
 /**
@@ -59,24 +62,24 @@ public class GameInterface extends JFrame {
         JMenu game = new JMenu("Game");
         menuBar.add(game);
         JMenuItem statistics = new JMenuItem("Statistics");
-        statistics.addActionListener(new StatMenuItemListener());
+        statistics.addActionListener(new StatMenuItemAction());
         game.add(statistics);
         JMenuItem changePlayer = new JMenuItem("Change player");
         changePlayer.addActionListener(new ChangePlayerMenuItemListener());
         JMenuItem changeGame = new JMenuItem("Change game");
         changeGame.addActionListener(new ChangeGameMenuItemListener());
         JMenuItem exit = new JMenuItem("Exit");
-        exit.addActionListener(new ExitMenuItemListener());
+        exit.addActionListener(new ExitMenuItemAction());
         game.add(changeGame);
         game.add(changePlayer);
         game.add(exit);
         JMenu help = new JMenu("Help");
         menuBar.add(help);
         JMenuItem howToPlay = new JMenuItem("How to play");
-        howToPlay.addActionListener(new HowToPlayMenuItemListener());
+        howToPlay.addActionListener(new HowToPlayMenuItemAction());
         help.add(howToPlay);
         JMenuItem about = new JMenuItem("About");
-        about.addActionListener(new AboutMenuItemListener());
+        about.addActionListener(new AboutMenuItemAction());
         help.add(about);
         return menuBar;
     }
@@ -153,7 +156,7 @@ public class GameInterface extends JFrame {
     /**
      * "Statistics" menu item action listener.
      */
-    public final class StatMenuItemListener implements ActionListener {
+    public final class StatMenuItemAction extends AbstractAction {
         /**
          * Gets a statistics map from a game controller and forms a table model from it.
          */
@@ -198,7 +201,7 @@ public class GameInterface extends JFrame {
     /**
      * "Exit" menu item action listener.
      */
-    private final class ExitMenuItemListener implements ActionListener {
+    private final class ExitMenuItemAction extends AbstractAction {
         /**
          * Calls GUI's "exit" method.
          */
@@ -211,7 +214,7 @@ public class GameInterface extends JFrame {
     /**
      * "How to play" menu item action listener.
      */
-    private final class HowToPlayMenuItemListener implements ActionListener {
+    private final class HowToPlayMenuItemAction extends AbstractAction {
         /**
          * Opens game rules in default browser.
          */
@@ -226,7 +229,7 @@ public class GameInterface extends JFrame {
     /**
      * "About" menu item action listener.
      */
-    private final class AboutMenuItemListener implements ActionListener {
+    private final class AboutMenuItemAction extends AbstractAction {
         /**
          * Shows information about this program.
          */

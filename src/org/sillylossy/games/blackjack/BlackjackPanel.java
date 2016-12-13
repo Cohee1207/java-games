@@ -8,7 +8,6 @@ import org.sillylossy.games.common.ui.images.CardImage;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,6 +16,7 @@ import java.util.List;
  */
 public class BlackjackPanel extends org.sillylossy.games.common.ui.BetPanel {
 
+    private static final String YOUR_CARDS_TEXT = "Your cards";
     /**
      * Panel for other player's cards.
      */
@@ -24,11 +24,11 @@ public class BlackjackPanel extends org.sillylossy.games.common.ui.BetPanel {
     /**
      * Label for other player's cards panel.
      */
-    private final JLabel lblDealersCards = createLabel("Dealer's cards");
+    private final JLabel lblDealersCards = createLabel("Dealer: draw on 16, stand on 17");
     /**
      * Label for player's cards panel.
      */
-    private final JLabel lblPlayersCards = createLabel("Your cards");
+    private final JLabel lblPlayersCards = createLabel(YOUR_CARDS_TEXT);
     /**
      * Panel for player's cards.
      */
@@ -37,28 +37,40 @@ public class BlackjackPanel extends org.sillylossy.games.common.ui.BetPanel {
      * "Double" game button.
      */
     private final JButton btnDouble = new JButton("Double");
+
     /**
      * "Hit" game button.
      */
     private final JButton btnHit = new JButton("Hit");
+
     /**
      * "Stand" game button.
      */
     private final JButton btnStand = new JButton("Stand");
     private final ArrayList<CardImage> playersCardsImages = new ArrayList<>();
     private final ArrayList<CardImage> dealersCardsImages = new ArrayList<>();
+    private final JPanel actionButtonsPanel = new JPanel();
+    private final JButton btnNewGame = new JButton("New game");
+
     /**
      * Creates a game area on panel with all needed visuals.
      */
     public BlackjackPanel() {
         gameArea.setLayout(createGameLayout());
-        dealersCardsPanel.setBackground(new Color(0, 100, 0));
-        playersCardsPanel.setBackground(new Color(0, 100, 0));
+        dealersCardsPanel.setBackground(BACKGROUND_COLOR.darker());
+        playersCardsPanel.setBackground(BACKGROUND_COLOR.darker());
         gameArea.add(lblDealersCards, getGBC(0, GridBagConstraints.VERTICAL));
         gameArea.add(dealersCardsPanel, getGBC(1, GridBagConstraints.BOTH));
         gameArea.add(lblPlayersCards, getGBC(2, GridBagConstraints.VERTICAL));
         gameArea.add(playersCardsPanel, getGBC(3, GridBagConstraints.BOTH));
-        gameArea.add(createActionsPanel(), getGBC(4, GridBagConstraints.BOTH));
+        btnNewGame.addActionListener(new NewGameButtonAction());
+        actionButtonsPanel.add(btnNewGame);
+        btnNewGame.setVisible(false);
+        JPanel actionsPanel = createActionsPanel();
+        JPanel panel = new JPanel();
+        panel.add(btnNewGame);
+        actionsPanel.add(panel);
+        gameArea.add(actionsPanel, getGBC(4, GridBagConstraints.BOTH));
     }
 
     /**
@@ -76,7 +88,9 @@ public class BlackjackPanel extends org.sillylossy.games.common.ui.BetPanel {
             dealersCardsImages.add(image);
             dealersCardsPanel.add(image.getLabel());
         }
-        dealersCardsImages.get(dealersCardsImages.size() - 1).flip();
+        image = dealersCardsImages.get(dealersCardsImages.size() - 1);
+        image.flip();
+        image.updateIcon();
         for (Card card : getGame().getPlayer().getHand().getCards()) {
             image = new CardImage(card, false);
             playersCardsImages.add(image);
@@ -93,6 +107,7 @@ public class BlackjackPanel extends org.sillylossy.games.common.ui.BetPanel {
         playersCardsImages.clear();
         dealersCardsPanel.removeAll();
         dealersCardsImages.clear();
+        lblPlayersCards.setText(YOUR_CARDS_TEXT);
     }
 
     /**
@@ -144,6 +159,7 @@ public class BlackjackPanel extends org.sillylossy.games.common.ui.BetPanel {
             if (image.isFlipped()) {
                 image.flip();
             }
+            image.updateIcon();
         }
         for (Card card : play) {
             CardImage image = new CardImage(card, false);
@@ -173,9 +189,9 @@ public class BlackjackPanel extends org.sillylossy.games.common.ui.BetPanel {
      */
     protected void processResults() {
         displayDealersCards(getGame().getDealer().play(getGame().getDeck()));
-        Main.getUI().alert(getGame().getResult());
-        clear();
-        start();
+        lblPlayersCards.setText(getGame().getResult());
+        actionButtonsPanel.setVisible(false);
+        btnNewGame.setVisible(true);
     }
 
     /**
@@ -193,38 +209,48 @@ public class BlackjackPanel extends org.sillylossy.games.common.ui.BetPanel {
     @Override
     public void redraw() {
         displayPlayersCards();
-        displayOpenCard();
+        if (!btnNewGame.isVisible()) {
+            displayOpenCard();
+        } else {
+            displayDealersCards(new ArrayList<Card>());
+        }
     }
 
     /**
      * Sets action buttons on / off depending on boolean value.
      */
     public void setActionButtons(boolean b) {
-        btnHit.setEnabled(b);
-        btnStand.setEnabled(b);
-        btnDouble.setEnabled(b);
+        actionButtonsPanel.setVisible(b);
         lblPlayersCards.setVisible(b);
+        lblDealersCards.setVisible(b);
         playersCardsPanel.setVisible(b);
         dealersCardsPanel.setVisible(b);
-        lblDealersCards.setVisible(b);
     }
 
     @Override
     protected JPanel createGameActions() {
-        JPanel actionButtonsPanel = new JPanel();
-        btnHit.addActionListener(new HitButtonListener());
+        btnHit.addActionListener(new HitButtonAction());
         actionButtonsPanel.add(btnHit);
-        btnStand.addActionListener(new StandButtonListener());
+        btnStand.addActionListener(new StandButtonAction());
         actionButtonsPanel.add(btnStand);
-        btnDouble.addActionListener(new DoubleButtonListener());
+        btnDouble.addActionListener(new DoubleButtonAction());
         actionButtonsPanel.add(btnDouble);
-        return  actionButtonsPanel;
+        return actionButtonsPanel;
+    }
+
+    private final class NewGameButtonAction extends AbstractAction {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            clear();
+            start();
+            btnNewGame.setVisible(false);
+        }
     }
 
     /**
      * "Hit" game button action listener.
      */
-    private final class HitButtonListener implements ActionListener {
+    private final class HitButtonAction extends AbstractAction {
         /**
          * Calls a "take card" game event. Adds a taken card to panel.
          */
@@ -237,7 +263,7 @@ public class BlackjackPanel extends org.sillylossy.games.common.ui.BetPanel {
     /**
      * "Double" game action button action listener.
      */
-    private final class DoubleButtonListener implements ActionListener {
+    private final class DoubleButtonAction extends AbstractAction {
         /**
          * Calls "double bet" game event. If player has insufficient score, shows a message.
          */
@@ -255,7 +281,7 @@ public class BlackjackPanel extends org.sillylossy.games.common.ui.BetPanel {
     /**
      * "Stand" button action listener.
      */
-    private final class StandButtonListener implements ActionListener {
+    private final class StandButtonAction extends AbstractAction {
         /**
          * Performs "stand" game action.
          */

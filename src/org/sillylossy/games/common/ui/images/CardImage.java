@@ -24,6 +24,7 @@ public class CardImage {
                 @Override
                 public void mouseClicked(MouseEvent e) {
                     flip();
+                    updateIcon();
                 }
 
                 @Override

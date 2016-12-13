@@ -12,7 +12,6 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 import static org.sillylossy.games.common.Main.getGameController;
 
@@ -84,7 +83,7 @@ public class MainPanel extends JPanel {
         statTable.setEnabled(false);
         statPanel.add(new JScrollPane(statTable));
         JButton btnReturn = new JButton("Return");
-        btnReturn.addActionListener(new ReturnButtonListener());
+        btnReturn.addActionListener(new ReturnButtonAction());
         statPanel.add(btnReturn, BorderLayout.SOUTH);
         return statPanel;
     }
@@ -149,13 +148,13 @@ public class MainPanel extends JPanel {
         JPanel buttonPanel = new JPanel();
         playerSelectPanel.add(new JScrollPane(playersList), BorderLayout.CENTER);
         JButton btnNewPlayer = new JButton("New player");
-        btnNewPlayer.addActionListener(new NewPlayerButtonListener());
+        btnNewPlayer.addActionListener(new NewPlayerButtonAction());
         buttonPanel.add(btnNewPlayer);
         JButton btnConfirm = new JButton("Confirm");
-        btnConfirm.addActionListener(new SelectPlayerButtonListener());
+        btnConfirm.addActionListener(new SelectPlayerButtonAction());
         buttonPanel.add(btnConfirm);
         JButton btnDelete = new JButton("Delete player");
-        btnDelete.addActionListener(new DeletePlayerButtonListener());
+        btnDelete.addActionListener(new DeletePlayerButtonAction());
         buttonPanel.add(btnDelete);
         playerSelectPanel.add(buttonPanel, BorderLayout.SOUTH);
         return playerSelectPanel;
@@ -215,7 +214,7 @@ public class MainPanel extends JPanel {
     /**
      * "Delete player" button action listener.
      */
-    private final class DeletePlayerButtonListener implements ActionListener {
+    private final class DeletePlayerButtonAction extends AbstractAction {
         /**
          * Asks for a confirmation. If an answer is "Yes" then player is deleted.
          */
@@ -233,7 +232,7 @@ public class MainPanel extends JPanel {
     /**
      * "Select player" button event listener.
      */
-    private final class SelectPlayerButtonListener implements ActionListener {
+    private final class SelectPlayerButtonAction extends AbstractAction {
         /**
          * If a player is selected, sets it active. Else shows an error message.
          */
@@ -252,7 +251,7 @@ public class MainPanel extends JPanel {
     /**
      * "Return" button event listener.
      */
-    private final class ReturnButtonListener implements ActionListener {
+    private final class ReturnButtonAction extends AbstractAction {
         /**
          * Show game panel, player selection or game selection.
          * Depends on selection states.
@@ -272,7 +271,7 @@ public class MainPanel extends JPanel {
     /**
      * "New player" button action listener.
      */
-    private final class NewPlayerButtonListener implements ActionListener {
+    private final class NewPlayerButtonAction extends AbstractAction {
         /**
          * Registers a player if the player's name matches the necessary conditions.
          * Sets player active. If an error occurs, shows a message.

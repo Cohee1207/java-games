@@ -10,8 +10,9 @@ import java.awt.event.ComponentEvent;
  */
 public abstract class GamePanel extends JPanel {
 
+    protected static final String NEW_GAME_BUTTON_TEXT = "New game";
+    protected static final Color BACKGROUND_COLOR = new Color(34, 139, 34);
     protected final JPanel gameArea = new JPanel();
-
     /**
      * Label with games status (current player, hand value, etc).
      */
@@ -22,7 +23,7 @@ public abstract class GamePanel extends JPanel {
      */
     GamePanel() {
         addComponentListener(new ResizePanelListener());
-        gameArea.setBackground(new Color(34, 139, 34));
+        gameArea.setBackground(BACKGROUND_COLOR);
         setLayout(new BorderLayout());
         add(createStatusBar(), BorderLayout.SOUTH);
         add(gameArea, BorderLayout.CENTER);

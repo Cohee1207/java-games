@@ -7,7 +7,6 @@ import org.sillylossy.games.common.players.Player;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public abstract class BetPanel extends GamePanel {
     /**
@@ -24,6 +23,7 @@ public abstract class BetPanel extends GamePanel {
      * "Accept" bet button.
      */
     private final JButton btnBet = new JButton("Accept");
+    private final JPanel betPanel = new JPanel();
 
     /**
      * Creates constraints for game's components.
@@ -97,6 +97,9 @@ public abstract class BetPanel extends GamePanel {
         setActionButtons(false);
         updateStatus();
         int min = getGame().getMinBet();
+        if (min <= 0) {
+            min = 1;
+        }
         int max = getGame().getMaxBet();
         betSpinnerModel.setMinimum(min);
         betSpinnerModel.setMaximum(max);
@@ -108,8 +111,7 @@ public abstract class BetPanel extends GamePanel {
      * Sets bet buttons on / off depending on boolean value.
      */
     private void setBetButtons(boolean b) {
-        betSpinner.setEnabled(b);
-        btnBet.setEnabled(b);
+        betPanel.setVisible(b);
     }
 
     protected abstract JPanel createGameActions();
@@ -120,27 +122,25 @@ public abstract class BetPanel extends GamePanel {
     protected JPanel createActionsPanel() {
         JPanel actionPanel = new JPanel();
         actionPanel.add(createGameActions());
-        actionPanel.add(Box.createHorizontalStrut(20));
         actionPanel.add(createBetPanel());
         return actionPanel;
     }
 
-
     private JPanel createBetPanel() {
-        JPanel betPanel = new JPanel();
         betPanel.add(new JLabel("Bet:"));
+        betPanel.add(Box.createHorizontalStrut(20));
         betSpinner.setModel(betSpinnerModel);
         betPanel.add(betSpinner);
         betPanel.add(btnBet);
         ((JSpinner.DefaultEditor) betSpinner.getEditor()).getTextField().setColumns(5);
-        btnBet.addActionListener(new AcceptBetButtonListener());
+        btnBet.addActionListener(new AcceptBetButtonAction());
         return betPanel;
     }
 
     /**
      * "Accept" bet button action listener.
      */
-    public final class AcceptBetButtonListener implements ActionListener {
+    public final class AcceptBetButtonAction extends AbstractAction {
         /**
          * Updates UI, calls start game event.
          */

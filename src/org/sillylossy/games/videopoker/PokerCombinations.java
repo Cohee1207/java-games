@@ -13,9 +13,9 @@ class PokerCombinations {
     private static final int THREE_REPEATS = 2;
     private static final int FOUR_REPEATS = 3;
     private static final Map<CardRank, Integer> aceIsLowValues = getRankValues(false);
-    private static final Comparator<Card> aceIsHighComparator = new CardComparator(getRankValues(true));
-    private static final Comparator<Card> aceIsLowComparator = new CardComparator(getRankValues(false));
     private static final Map<CardRank, Integer> aceIsHighValues = getRankValues(true);
+    private static final Comparator<Card> aceIsLowComparator = new CardComparator(aceIsLowValues);
+    private static final Comparator<Card> aceIsHighComparator = new CardComparator(aceIsHighValues);
     private final CardRank minPairRank;
     private final int numberOfRepeats;
     private final EnumSet<CardRank> rankEnumSet;
