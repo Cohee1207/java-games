@@ -30,7 +30,7 @@ public class Main {
     /**
      * Current game instance.
      */
-    private static Game gameInstance;
+    private static Game game;
 
     /**
      * Gets a reference to a game controller.
@@ -42,15 +42,15 @@ public class Main {
     /**
      * Gets a reference to a game instance.
      */
-    public static Game getGameInstance() {
-        return gameInstance;
+    public static Game getGame() {
+        return game;
     }
 
     /**
      * Sets a game instance with value from param.
      */
-    public static void setGameInstance(Game gameInstance) {
-        Main.gameInstance = gameInstance;
+    public static void setGame(Game game) {
+        Main.game = game;
     }
 
     /**

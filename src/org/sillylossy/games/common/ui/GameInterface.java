@@ -9,9 +9,6 @@ import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.*;
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.Map;
 
 /**
@@ -22,7 +19,7 @@ public class GameInterface extends JFrame {
     /**
      * A minimal window size.
      */
-    private static final Dimension minWindowSize = new Dimension(700, 554);
+    private static final Dimension minWindowSize = new Dimension(750, 560);
 
     /**
      * Main panel of GUI.
@@ -64,8 +61,14 @@ public class GameInterface extends JFrame {
         JMenuItem statistics = new JMenuItem("Statistics");
         statistics.addActionListener(new StatMenuItemListener());
         game.add(statistics);
+        JMenuItem changePlayer = new JMenuItem("Change player");
+        changePlayer.addActionListener(new ChangePlayerMenuItemListener());
+        JMenuItem changeGame = new JMenuItem("Change game");
+        changeGame.addActionListener(new ChangeGameMenuItemListener());
         JMenuItem exit = new JMenuItem("Exit");
         exit.addActionListener(new ExitMenuItemListener());
+        game.add(changeGame);
+        game.add(changePlayer);
         game.add(exit);
         JMenu help = new JMenu("Help");
         menuBar.add(help);
@@ -124,7 +127,7 @@ public class GameInterface extends JFrame {
      * Asks for confirm and exits the game if the answer is "Yes".
      */
     private void exit() {
-        if (Main.getGameController().isInGame()) {
+        if (Main.getUI().getMainPanel().isInGame()) {
             if (confirm("This will end your current game. Sure?")) {
                 dispose();
             }
@@ -132,6 +135,7 @@ public class GameInterface extends JFrame {
             dispose();
         }
     }
+
     /**
      * Window closing event listener.
      */
@@ -213,12 +217,8 @@ public class GameInterface extends JFrame {
          */
         @Override
         public void actionPerformed(ActionEvent e) {
-            if (Desktop.isDesktopSupported()) {
-                try {
-                    Desktop.getDesktop().browse(new URI("https://goo.gl/oh5oT2"));
-                } catch (IOException | URISyntaxException ex) {
-                    ex.printStackTrace();
-                }
+            if (Main.getGame() != null) {
+                new RulesBrowser(Main.getGame().getRules());
             }
         }
     }
@@ -232,9 +232,28 @@ public class GameInterface extends JFrame {
          */
         @Override
         public void actionPerformed(ActionEvent event) {
-            alert( "Author: SillyLossy (http://github.com/sillylossy).\n\n" +
-                   "Card images: https://code.google.com/archive/p/vector-playing-cards/ \n" +
-                   "Card back image: http://svg-cards.sourceforge.net/ \n");
+            alert("Author: SillyLossy (http://github.com/sillylossy).\n\n" +
+                    "Card images: https://code.google.com/archive/p/vector-playing-cards/ \n" +
+                    "Card back image: http://svg-cards.sourceforge.net/ \n");
+        }
+    }
+
+    private class ChangeGameMenuItemListener extends AbstractAction {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            Main.getUI().getMainPanel().setInGame(false);
+            Main.setGame(null);
+            mainPanel.setGamePanel(null);
+            mainPanel.flipToGameSelection();
+        }
+    }
+
+    private class ChangePlayerMenuItemListener extends AbstractAction {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            Main.getUI().getMainPanel().setInGame(false);
+            Main.getGame().setPlayer(null);
+            mainPanel.flipToPlayerSelection();
         }
     }
 }

@@ -34,10 +34,6 @@ public class BlackjackPanel extends org.sillylossy.games.common.ui.BetPanel {
      */
     private final JPanel playersCardsPanel = new JPanel();
     /**
-     * Blackjack game instance.
-     */
-    private final BlackjackGame gameInstance = (BlackjackGame) Main.getGameInstance();
-    /**
      * "Double" game button.
      */
     private final JButton btnDouble = new JButton("Double");
@@ -51,7 +47,6 @@ public class BlackjackPanel extends org.sillylossy.games.common.ui.BetPanel {
     private final JButton btnStand = new JButton("Stand");
     private ArrayList<CardImage> playersCardsImages = new ArrayList<>();
     private ArrayList<CardImage> dealersCardsImages = new ArrayList<>();
-
     /**
      * Creates a game area on panel with all needed visuals.
      */
@@ -66,16 +61,23 @@ public class BlackjackPanel extends org.sillylossy.games.common.ui.BetPanel {
         gameArea.add(createActionsPanel(), getGBC(4, GridBagConstraints.BOTH));
     }
 
+    /**
+     * Blackjack game instance.
+     */
+    private BlackjackGame getGame() {
+        return (BlackjackGame) Main.getGame();
+    }
+
     @Override
     protected void initGame() {
         CardImage image;
-        for (Card card : gameInstance.getDealer().getHand().getCards()) {
+        for (Card card : getGame().getDealer().getHand().getCards()) {
             image = new CardImage(card, false);
             dealersCardsImages.add(image);
             dealersCardsPanel.add(image.getLabel());
         }
         dealersCardsImages.get(dealersCardsImages.size() - 1).flip();
-        for (Card card : gameInstance.getPlayer().getHand().getCards()) {
+        for (Card card : getGame().getPlayer().getHand().getCards()) {
             image = new CardImage(card, false);
             playersCardsImages.add(image);
             playersCardsPanel.add(image.getLabel());
@@ -91,15 +93,13 @@ public class BlackjackPanel extends org.sillylossy.games.common.ui.BetPanel {
         playersCardsImages.clear();
         dealersCardsPanel.removeAll();
         dealersCardsImages.clear();
-        playersCardsPanel.revalidate();
-        dealersCardsPanel.revalidate();
     }
 
     /**
      * Displays player's card images with height = window / 3 (experimental value).
      */
     private void displayPlayersCards() {
-        if (gameInstance.getPlayer() == null) {
+        if (getGame().getPlayer() == null) {
             return;
         }
         for (CardImage image : playersCardsImages) {
@@ -117,7 +117,7 @@ public class BlackjackPanel extends org.sillylossy.games.common.ui.BetPanel {
         playersCardsImages.add(image);
         playersCardsPanel.add(image.getLabel());
         updateStatus();
-        if (gameInstance.shouldEnd()) {
+        if (getGame().shouldEnd()) {
             processResults();
         }
     }
@@ -126,7 +126,7 @@ public class BlackjackPanel extends org.sillylossy.games.common.ui.BetPanel {
      * Displays dealer's open card and a card back.
      */
     private void displayOpenCard() {
-        Card card = gameInstance.getDealer().getOpenCard();
+        Card card = getGame().getDealer().getOpenCard();
         if (card == null) {
             return;
         }
@@ -161,10 +161,10 @@ public class BlackjackPanel extends org.sillylossy.games.common.ui.BetPanel {
      * Updates player's status in status bar.
      */
     protected void updateStatus() {
-        Player player = gameInstance.getPlayer();
+        Player player = getGame().getPlayer();
         String status = "Player: " + player.toString() +
                 " bet: " + player.getBet() + "$ " +
-                "Hand value: " + gameInstance.getValue(player.getHand().getCards());
+                "Hand value: " + getGame().getValue(player.getHand().getCards());
         lblStatus.setText(status);
     }
 
@@ -172,8 +172,8 @@ public class BlackjackPanel extends org.sillylossy.games.common.ui.BetPanel {
      * Processes game results, shows a result message.
      */
     protected void processResults() {
-        displayDealersCards(gameInstance.getDealer().play(gameInstance.getDeck()));
-        Main.getUI().alert(gameInstance.getResult());
+        displayDealersCards(getGame().getDealer().play(getGame().getDeck()));
+        Main.getUI().alert(getGame().getResult());
         clear();
         start();
     }
@@ -230,7 +230,7 @@ public class BlackjackPanel extends org.sillylossy.games.common.ui.BetPanel {
          */
         @Override
         public void actionPerformed(ActionEvent e) {
-            cardButtonAction(gameInstance.hitAction());
+            cardButtonAction(getGame().hitAction());
         }
     }
 
@@ -243,7 +243,7 @@ public class BlackjackPanel extends org.sillylossy.games.common.ui.BetPanel {
          */
         @Override
         public void actionPerformed(ActionEvent e) {
-            Card card = gameInstance.doubleAction();
+            Card card = getGame().doubleAction();
             if (card == null) {
                 Main.getUI().alert("You don't have enough score to double your bet.");
                 return;
@@ -261,7 +261,7 @@ public class BlackjackPanel extends org.sillylossy.games.common.ui.BetPanel {
          */
         @Override
         public void actionPerformed(ActionEvent event) {
-            gameInstance.standAction();
+            getGame().standAction();
             processResults();
         }
     }

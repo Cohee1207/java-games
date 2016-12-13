@@ -49,6 +49,8 @@ public abstract class GamePanel extends JPanel {
      */
     protected abstract void updateStatus();
 
+    protected abstract void initGame();
+
     /**
      * Starts a game.
      */

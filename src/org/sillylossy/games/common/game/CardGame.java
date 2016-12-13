@@ -39,18 +39,6 @@ public abstract class CardGame extends BetGame {
     }
 
     /**
-     * Updates player score and statistics depending on game result.
-     *
-     * @return string representation of game result
-     */
-    public abstract String getResult();
-
-    /**
-     * Resets the game.
-     */
-    protected abstract void reset();
-
-    /**
      * Deals cards to players;
      */
     protected abstract void dealCards();

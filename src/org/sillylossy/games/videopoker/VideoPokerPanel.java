@@ -10,6 +10,7 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -17,32 +18,56 @@ import java.util.Map;
 import static org.sillylossy.games.videopoker.PokerCombinations.Combination;
 import static org.sillylossy.games.videopoker.PokerCombinations.combinationStringMap;
 
-
 public class VideoPokerPanel extends BetPanel {
 
-    private final JButton btnPlay = new JButton("Play");
+    private static final String PLAY_BUTTON_TEXT = "Play";
+    private static final String NEW_GAME_BUTTON_TEXT = "New game";
+    private final JButton btnPlay = new JButton();
     private List<CardImage> cardImages = new ArrayList<>();
-
-    private JPanel cardsPanel;
+    private JPanel cardsPanel = new JPanel();
     private JTable payTable = new JTable();
     private JScrollPane payTablePane = new JScrollPane(payTable);
-    private JLabel lblReplaceHint = createLabel("Click on cards you want to replace");
-    private VideoPokerGame gameInstance = (VideoPokerGame) Main.getGameInstance();
+    private JLabel lblHint = createLabel("Click on cards you want to replace");
+    private ActionListener newGameButtonListener = new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            clear();
+            start();
+            btnPlay.removeActionListener(this);
+            btnPlay.setText(PLAY_BUTTON_TEXT);
+            btnPlay.addActionListener(playButtonListener);
+        }
+    };
+    private ActionListener playButtonListener = new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            for (CardImage image : cardImages) {
+                if (image.isFlipped()) {
+                    image.setCard(getGame().changeCard(image.getCard()));
+                    image.flip();
+                }
+            }
+            processResults();
+        }
+    };
 
     public VideoPokerPanel() {
-        cardsPanel = new JPanel();
         payTable.setEnabled(false);
         gameArea.setLayout(createGameLayout());
         gameArea.add(payTablePane, getGBC(0, GridBagConstraints.BOTH));
-        gameArea.add(cardsPanel, getGBC(1, GridBagConstraints.HORIZONTAL));
-        gameArea.add(lblReplaceHint, getGBC(2, GridBagConstraints.NONE));
+        gameArea.add(lblHint, getGBC(1, GridBagConstraints.VERTICAL));
+        gameArea.add(cardsPanel, getGBC(2, GridBagConstraints.HORIZONTAL));
         gameArea.add(createActionsPanel(), getGBC(3, GridBagConstraints.BOTH));
         cardsPanel.setBackground(new Color(34, 139, 34));
     }
 
+    private VideoPokerGame getGame() {
+        return (VideoPokerGame) Main.getGame();
+    }
+
     private DefaultTableModel createTableModel() {
         Object[][] vector = new Object[Combination.values().length][2];
-        Map<PokerCombinations.Combination, Integer> table = gameInstance.getPayTable();
+        Map<PokerCombinations.Combination, Integer> table = getGame().getPayTable();
         int i = 0;
         for (Map.Entry<PokerCombinations.Combination, String> entry : combinationStringMap.entrySet()) {
             vector[i][0] = entry.getValue();
@@ -60,7 +85,7 @@ public class VideoPokerPanel extends BetPanel {
         gbl.rowHeights = new int[]{0, 0, 0, 0};
         gbl.columnWidths = new int[]{100};
         gbl.columnWeights = new double[]{1.0};
-        gbl.rowWeights = new double[]{1.0, 1.0, 0.0, 0.0};
+        gbl.rowWeights = new double[]{0.9, 0.0, 0.0, 0.0};
         return gbl;
     }
 
@@ -74,12 +99,14 @@ public class VideoPokerPanel extends BetPanel {
     @Override
     public void clear() {
         cardImages.clear();
+        setActionButtons(false);
         cardsPanel.removeAll();
+        lblHint.setText(" ");
     }
 
     @Override
     public void updateStatus() {
-        Player player = gameInstance.getPlayer();
+        Player player = getGame().getPlayer();
         String status = "Player: " + player.toString() +
                 " bet: " + player.getBet() + "$ ";
         lblStatus.setText(status);
@@ -92,45 +119,37 @@ public class VideoPokerPanel extends BetPanel {
 
     @Override
     public void processResults() {
-        Main.getUI().alert(gameInstance.getResult());
-        clear();
-        start();
+        lblHint.setText(getGame().getResult());
+        btnPlay.setText(NEW_GAME_BUTTON_TEXT);
+        btnPlay.removeActionListener(playButtonListener);
+        btnPlay.addActionListener(newGameButtonListener);
     }
 
     @Override
     public void setActionButtons(boolean b) {
         btnPlay.setEnabled(b);
         payTablePane.setVisible(b);
-        lblReplaceHint.setVisible(b);
+        lblHint.setVisible(b);
         cardsPanel.setVisible(b);
     }
 
     @Override
     protected JPanel createGameActions() {
         JPanel actions = new JPanel();
-        btnPlay.addActionListener(new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                for (CardImage image : cardImages) {
-                    if (image.isFlipped()) {
-                        image.setCard(gameInstance.changeCard(image.getCard()));
-                        image.flip();
-                    }
-                }
-                processResults();
-            }
-        });
+        btnPlay.addActionListener(playButtonListener);
+        btnPlay.setText(PLAY_BUTTON_TEXT);
         actions.add(btnPlay);
         return actions;
     }
 
     @Override
     protected void initGame() {
-        for (Card card : gameInstance.getPlayer().getHand().getCards()) {
+        for (Card card : getGame().getPlayer().getHand().getCards()) {
             CardImage image = new CardImage(card, true);
             cardImages.add(image);
             cardsPanel.add(image.getLabel());
         }
         payTable.setModel(createTableModel());
+        btnPlay.setText("Play");
     }
 }

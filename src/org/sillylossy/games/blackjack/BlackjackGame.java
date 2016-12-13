@@ -183,11 +183,11 @@ public class BlackjackGame extends CardGame {
         } else if (playerValue > BLACKJACK) {
             player.decreaseScore(bet);
             Main.getGameController().addStatEvent(player, StatEvent.LOST);
-            result = "You've lost: overtake";
+            result = "You've lost: bust";
         } else if (dealerValue > BLACKJACK && playerValue <= BLACKJACK) {
             player.increaseScore(bet);
             Main.getGameController().addStatEvent(player, StatEvent.WON);
-            result = "You've won: dealer overtake";
+            result = "You've won: dealer bust";
         } else if (playerValue > dealerValue) {
             player.increaseScore(bet);
             Main.getGameController().addStatEvent(player, StatEvent.WON);
@@ -209,7 +209,7 @@ public class BlackjackGame extends CardGame {
      * Clears dealer's and player's hand, sets stand flag to false and bet to 0.
      */
     @Override
-    protected void reset() {
+    public void reset() {
         player.getHand().clear();
         player.setBet(0);
         player.setStand(false);

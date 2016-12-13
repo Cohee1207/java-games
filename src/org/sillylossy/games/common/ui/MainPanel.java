@@ -55,11 +55,15 @@ public class MainPanel extends JPanel {
      * A GUI-table of statistics.
      */
     private final JTable statTable = new JTable();
-
+    private final JList<String> gamesList = new JList<>();
     /**
      * Reference to game panel of selected game.
      */
     private GamePanel gamePanel;
+    /**
+     * A flag that indicates whether a player is in game.
+     */
+    private boolean inGame = false;
 
     /**
      * Constructs main panel: sets layout, adds sub-panels.
@@ -93,22 +97,13 @@ public class MainPanel extends JPanel {
     private JPanel createGameSelector() {
         JPanel panel = new JPanel();
         panel.setLayout(new BorderLayout());
-        final JList<Game> gamesList = new JList<>();
-        DefaultListModel<Game> listModel = new DefaultListModel<>();
+        DefaultListModel<String> listModel = new DefaultListModel<>();
         gamesList.setModel(listModel);
-        listModel.addElement(new BlackjackGame());
-        listModel.addElement(new VideoPokerGame());
+        listModel.addElement(BlackjackGame.GAME_NAME);
+        listModel.addElement(VideoPokerGame.GAME_NAME);
         panel.add(new JScrollPane(gamesList), BorderLayout.CENTER);
         JButton btnAccept = new JButton("Accept");
-        btnAccept.addActionListener(new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Game selected = gamesList.getSelectedValue();
-                Main.setGameInstance(selected);
-                setGame(selected);
-                flipToPlayerSelection();
-            }
-        });
+        btnAccept.addActionListener(new SelectGameButtonActionListener());
         panel.add(btnAccept, BorderLayout.SOUTH);
         return panel;
     }
@@ -118,7 +113,7 @@ public class MainPanel extends JPanel {
      */
     public void flipToGameSelection() {
         Main.getUI().setTitle("Select a game");
-        getGameController().setInGame(false);
+        setInGame(false);
         gameLayout.show(this, GAME_SELECTOR);
     }
 
@@ -170,8 +165,11 @@ public class MainPanel extends JPanel {
      * Show game panel.
      */
     void flipToGame() {
-        getGameController().setInGame(true);
-        Main.getUI().setTitle(Main.getGameInstance().getGameName());
+        if (!isInGame()) {
+            gamePanel.start();
+        }
+        setInGame(true);
+        Main.getUI().setTitle(Main.getGame().getGameName());
         gameLayout.show(this, GAME_PANEL);
     }
 
@@ -179,7 +177,7 @@ public class MainPanel extends JPanel {
      * Shows a player selection panel with list filled with registered players.
      */
     void flipToPlayerSelection() {
-        getGameController().setInGame(false);
+        setInGame(false);
         Main.getUI().setTitle("Select a player");
         DefaultListModel<Player> listModel = new DefaultListModel<>();
         for (Player player : getGameController().getPlayers()) {
@@ -196,20 +194,22 @@ public class MainPanel extends JPanel {
         return gamePanel;
     }
 
+    void setGamePanel(GamePanel gamePanel) {
+        this.gamePanel = gamePanel;
+    }
+
     /**
-     * Sets an active game.
-     *
-     * @param selected a reference to "Game object"
+     * Gets an in-game flag.
      */
-    private void setGame(Game selected) {
-        if (selected.getGameName().equals(BlackjackGame.GAME_NAME)) {
-            gamePanel = new BlackjackPanel();
-        } else if (selected.getGameName().equals(VideoPokerGame.GAME_NAME)){
-            gamePanel = new VideoPokerPanel();
-        } else {
-            throw new UnsupportedOperationException();
-        }
-        add(gamePanel, GAME_PANEL);
+    boolean isInGame() {
+        return inGame;
+    }
+
+    /**
+     * Sets an in-game flag.
+     */
+    void setInGame(boolean inGame) {
+        this.inGame = inGame;
     }
 
     /**
@@ -242,7 +242,6 @@ public class MainPanel extends JPanel {
             Player selected = getSelectedPlayer();
             if (getGameController().setActivePlayer(selected)) {
                 flipToGame();
-                gamePanel.start();
             } else {
                 String error = getGameController().getLastError();
                 Main.getUI().alert(error);
@@ -260,7 +259,7 @@ public class MainPanel extends JPanel {
          */
         @Override
         public void actionPerformed(ActionEvent e) {
-            if (getGameController().isInGame()) {
+            if (isInGame()) {
                 flipToGame();
             } else if (getGamePanel() == null) {
                 flipToGameSelection();
@@ -287,11 +286,46 @@ public class MainPanel extends JPanel {
             name = name.trim();
             if (getGameController().register(name)) {
                 flipToGame();
-                getGamePanel().start();
             } else {
                 String error = getGameController().getLastError();
                 Main.getUI().alert(error);
             }
+        }
+    }
+
+    private class SelectGameButtonActionListener extends AbstractAction {
+        /**
+         * Sets an active game.
+         */
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            Game game;
+            GamePanel panel;
+            Player player = null;
+            if (Main.getGame() != null) {
+                player = Main.getGame().getPlayer();
+            }
+            switch (gamesList.getSelectedValue()) {
+                case BlackjackGame.GAME_NAME:
+                    game = new BlackjackGame();
+                    panel = new BlackjackPanel();
+                    break;
+                case VideoPokerGame.GAME_NAME:
+                    game = new VideoPokerGame();
+                    panel = new VideoPokerPanel();
+                    break;
+                default:
+                    throw new UnsupportedOperationException();
+            }
+            Main.setGame(game);
+            MainPanel.this.setGamePanel(panel);
+            if (player == null) {
+                flipToPlayerSelection();
+            } else {
+                Main.getGameController().setActivePlayer(player);
+                flipToGame();
+            }
+            add(gamePanel, GAME_PANEL);
         }
     }
 }

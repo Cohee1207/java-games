@@ -36,7 +36,7 @@ class Dealer extends Participant {
     List<Card> play(Deck deck) {
         final int STOP_VALUE = 17;
         List<Card> taken = new ArrayList<>();
-        while (((BlackjackGame)Main.getGameInstance()).getValue(getHand().getCards()) < STOP_VALUE) {
+        while (((BlackjackGame) Main.getGame()).getValue(getHand().getCards()) < STOP_VALUE) {
             Card card = deck.draw();
             getHand().addCard(card);
             taken.add(card);

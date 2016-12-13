@@ -97,7 +97,7 @@ public class VideoPokerGame extends CardGame {
     }
 
     @Override
-    protected void reset() {
+    public void reset() {
         player.getHand().clear();
         player.setBet(0);
         player.setStand(false);

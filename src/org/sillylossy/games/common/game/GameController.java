@@ -23,11 +23,6 @@ public class GameController implements java.io.Serializable {
     private final HashMap<Player, Statistics> statistics = new HashMap<>();
 
     /**
-     * A flag that indicates whether a player is in game.
-     */
-    private boolean inGame = false;
-
-    /**
      * Holds last set string error description.
      */
     private transient String lastError;
@@ -104,20 +99,6 @@ public class GameController implements java.io.Serializable {
     }
 
     /**
-     * Gets an in-game flag.
-     */
-    public boolean isInGame() {
-        return inGame;
-    }
-
-    /**
-     * Sets an in-game flag.
-     */
-    public void setInGame(boolean inGame) {
-        this.inGame = inGame;
-    }
-
-    /**
      * Registers a player with specified name.
      *
      * @param username desired name
@@ -165,7 +146,7 @@ public class GameController implements java.io.Serializable {
             setLastError("Please select a player or register.");
             return false;
         }
-        Main.getGameInstance().setPlayer(selected);
+        Main.getGame().setPlayer(selected);
         return true;
     }
 }

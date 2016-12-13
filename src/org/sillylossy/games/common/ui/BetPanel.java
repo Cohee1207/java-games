@@ -24,7 +24,6 @@ public abstract class BetPanel extends GamePanel {
      * "Accept" bet button.
      */
     private final JButton btnBet = new JButton("Accept");
-    private final BetGame gameInstance = (BetGame) Main.getGameInstance();
 
     /**
      * Creates constraints for game's components.
@@ -41,6 +40,10 @@ public abstract class BetPanel extends GamePanel {
         return gbc;
     }
 
+    private BetGame getGame() {
+        return (BetGame) Main.getGame();
+    }
+
     /**
      * Gets selected bet value.
      */
@@ -55,7 +58,7 @@ public abstract class BetPanel extends GamePanel {
      * true if player didn't want to reset score
      */
     private boolean checkScore() {
-        Player player = gameInstance.getPlayer();
+        Player player = getGame().getPlayer();
         final int LOW_SCORE = 20;
         if (player.getScore() <= LOW_SCORE) {
             if (Main.getUI().confirm(" You almost have 0 $ \n Reset score?")) {
@@ -93,8 +96,8 @@ public abstract class BetPanel extends GamePanel {
         setBetButtons(true);
         setActionButtons(false);
         updateStatus();
-        int min = gameInstance.getMinBet();
-        int max = gameInstance.getMaxBet();
+        int min = getGame().getMinBet();
+        int max = getGame().getMaxBet();
         betSpinnerModel.setMinimum(min);
         betSpinnerModel.setMaximum(max);
         betSpinnerModel.setStepSize(max / 10);
@@ -129,11 +132,10 @@ public abstract class BetPanel extends GamePanel {
         betSpinner.setModel(betSpinnerModel);
         betPanel.add(betSpinner);
         betPanel.add(btnBet);
+        ((JSpinner.DefaultEditor) betSpinner.getEditor()).getTextField().setColumns(5);
         btnBet.addActionListener(new AcceptBetButtonListener());
         return betPanel;
     }
-
-    protected abstract void initGame();
 
     /**
      * "Accept" bet button action listener.
@@ -146,12 +148,12 @@ public abstract class BetPanel extends GamePanel {
         public void actionPerformed(ActionEvent e) {
             setBetButtons(false);
             setActionButtons(true);
-            gameInstance.betAction(getBetValue());
+            getGame().betAction(getBetValue());
             updateStatus();
             initGame();
             Main.getUI().getMainPanel().flipToGame();
             redraw();
-            if (Main.getGameInstance().shouldEnd()) {
+            if (Main.getGame().shouldEnd()) {
                 processResults();
             }
         }
