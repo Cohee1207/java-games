@@ -11,9 +11,9 @@ public class Statistics implements java.io.Serializable {
     private int gamesLost;
 
     /**
-     * Holds a number of games pushed.
+     * Holds a number of games drawn.
      */
-    private int gamesPushed;
+    private int gamesDrawn;
 
     /**
      * Holds a number of games won.
@@ -28,10 +28,10 @@ public class Statistics implements java.io.Serializable {
     }
 
     /**
-     * Adds one push.
+     * Adds one draw.
      */
-    void addPush() {
-        ++gamesPushed;
+    void addDraw() {
+        ++gamesDrawn;
     }
 
     /**
@@ -49,10 +49,10 @@ public class Statistics implements java.io.Serializable {
     }
 
     /**
-     * Gets a number of games pushed.
+     * Gets a number of games drawn.
      */
-    public final int getGamesPushed() {
-        return gamesPushed;
+    public final int getGamesDrawn() {
+        return gamesDrawn;
     }
 
     /**

@@ -11,12 +11,12 @@ import java.util.Map;
 /**
  * Utility that controls image files.
  */
-class CardImageController {
+public class CardImageController {
 
     /**
      * Image file extension.
      */
-    private static final String IMAGE_EXT = ".png";
+    public static final String IMAGE_EXT = ".png";
 
     /**
      * A card back image

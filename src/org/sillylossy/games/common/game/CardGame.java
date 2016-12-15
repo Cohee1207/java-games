@@ -35,7 +35,9 @@ public abstract class CardGame extends BetGame {
     @Override
     public void setPlayer(Player player) {
         super.setPlayer(player);
-        player.setHand(new Hand());
+        if (player != null) {
+            player.setHand(new Hand());
+        }
     }
 
     /**

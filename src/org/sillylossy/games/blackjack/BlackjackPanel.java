@@ -17,6 +17,13 @@ import java.util.List;
 public class BlackjackPanel extends org.sillylossy.games.common.ui.BetPanel {
 
     private static final String YOUR_CARDS_TEXT = "Your cards";
+
+    private static final String DEALER_TAG = "Dealer: ";
+
+    private static final String DEALER_RULES = "draw on 16, stand on hard 17";
+
+    private static final String DEALER_LABEL = DEALER_TAG + DEALER_RULES;
+    private static final List<Card> emptyList = new ArrayList<>();
     /**
      * Panel for other player's cards.
      */
@@ -24,11 +31,11 @@ public class BlackjackPanel extends org.sillylossy.games.common.ui.BetPanel {
     /**
      * Label for other player's cards panel.
      */
-    private final JLabel lblDealersCards = createLabel("Dealer: draw on 16, stand on 17");
+    private final JLabel lblDealer = createLabel(DEALER_LABEL);
     /**
      * Label for player's cards panel.
      */
-    private final JLabel lblPlayersCards = createLabel(YOUR_CARDS_TEXT);
+    private final JLabel lblPlayer = createLabel(YOUR_CARDS_TEXT);
     /**
      * Panel for player's cards.
      */
@@ -37,12 +44,10 @@ public class BlackjackPanel extends org.sillylossy.games.common.ui.BetPanel {
      * "Double" game button.
      */
     private final JButton btnDouble = new JButton("Double");
-
     /**
      * "Hit" game button.
      */
     private final JButton btnHit = new JButton("Hit");
-
     /**
      * "Stand" game button.
      */
@@ -50,19 +55,19 @@ public class BlackjackPanel extends org.sillylossy.games.common.ui.BetPanel {
     private final ArrayList<CardImage> playersCardsImages = new ArrayList<>();
     private final ArrayList<CardImage> dealersCardsImages = new ArrayList<>();
     private final JPanel actionButtonsPanel = new JPanel();
-    private final JButton btnNewGame = new JButton("New game");
+    private final JButton btnNewGame = new JButton(NEW_GAME_BUTTON_TEXT);
 
     /**
      * Creates a game area on panel with all needed visuals.
      */
     public BlackjackPanel() {
-        gameArea.setLayout(createGameLayout());
+        setLayout(createGameLayout());
         dealersCardsPanel.setBackground(BACKGROUND_COLOR.darker());
         playersCardsPanel.setBackground(BACKGROUND_COLOR.darker());
-        gameArea.add(lblDealersCards, getGBC(0, GridBagConstraints.VERTICAL));
-        gameArea.add(dealersCardsPanel, getGBC(1, GridBagConstraints.BOTH));
-        gameArea.add(lblPlayersCards, getGBC(2, GridBagConstraints.VERTICAL));
-        gameArea.add(playersCardsPanel, getGBC(3, GridBagConstraints.BOTH));
+        add(lblDealer, getGBC(0, GridBagConstraints.VERTICAL));
+        add(dealersCardsPanel, getGBC(1, GridBagConstraints.BOTH));
+        add(lblPlayer, getGBC(2, GridBagConstraints.VERTICAL));
+        add(playersCardsPanel, getGBC(3, GridBagConstraints.BOTH));
         btnNewGame.addActionListener(new NewGameButtonAction());
         actionButtonsPanel.add(btnNewGame);
         btnNewGame.setVisible(false);
@@ -70,7 +75,7 @@ public class BlackjackPanel extends org.sillylossy.games.common.ui.BetPanel {
         JPanel panel = new JPanel();
         panel.add(btnNewGame);
         actionsPanel.add(panel);
-        gameArea.add(actionsPanel, getGBC(4, GridBagConstraints.BOTH));
+        add(actionsPanel, getGBC(4, GridBagConstraints.BOTH));
     }
 
     /**
@@ -107,7 +112,7 @@ public class BlackjackPanel extends org.sillylossy.games.common.ui.BetPanel {
         playersCardsImages.clear();
         dealersCardsPanel.removeAll();
         dealersCardsImages.clear();
-        lblPlayersCards.setText(YOUR_CARDS_TEXT);
+        lblPlayer.setText(YOUR_CARDS_TEXT);
     }
 
     /**
@@ -152,6 +157,7 @@ public class BlackjackPanel extends org.sillylossy.games.common.ui.BetPanel {
 
     /**
      * Displays dealer's cards.
+     *
      * @param play cards taken by dealer
      */
     private void displayDealersCards(List<Card> play) {
@@ -181,7 +187,7 @@ public class BlackjackPanel extends org.sillylossy.games.common.ui.BetPanel {
         String status = "Player: " + player.toString() +
                 " bet: " + player.getBet() + "$ " +
                 "Hand value: " + getGame().getValue(player.getHand().getCards());
-        lblStatus.setText(status);
+        Main.getUI().updateStatus(status);
     }
 
     /**
@@ -189,9 +195,10 @@ public class BlackjackPanel extends org.sillylossy.games.common.ui.BetPanel {
      */
     protected void processResults() {
         displayDealersCards(getGame().getDealer().play(getGame().getDeck()));
-        lblPlayersCards.setText(getGame().getResult());
+        lblPlayer.setText(getGame().getResult());
         actionButtonsPanel.setVisible(false);
         btnNewGame.setVisible(true);
+        lblDealer.setText(DEALER_TAG + getGame().getDealerValue());
     }
 
     /**
@@ -212,7 +219,7 @@ public class BlackjackPanel extends org.sillylossy.games.common.ui.BetPanel {
         if (!btnNewGame.isVisible()) {
             displayOpenCard();
         } else {
-            displayDealersCards(new ArrayList<Card>());
+            displayDealersCards(emptyList);
         }
     }
 
@@ -221,8 +228,8 @@ public class BlackjackPanel extends org.sillylossy.games.common.ui.BetPanel {
      */
     public void setActionButtons(boolean b) {
         actionButtonsPanel.setVisible(b);
-        lblPlayersCards.setVisible(b);
-        lblDealersCards.setVisible(b);
+        lblPlayer.setVisible(b);
+        lblDealer.setVisible(b);
         playersCardsPanel.setVisible(b);
         dealersCardsPanel.setVisible(b);
     }
@@ -242,8 +249,10 @@ public class BlackjackPanel extends org.sillylossy.games.common.ui.BetPanel {
         @Override
         public void actionPerformed(ActionEvent e) {
             clear();
+            getGame().reset();
             start();
             btnNewGame.setVisible(false);
+            lblDealer.setText(DEALER_LABEL);
         }
     }
 
@@ -275,6 +284,7 @@ public class BlackjackPanel extends org.sillylossy.games.common.ui.BetPanel {
                 return;
             }
             cardButtonAction(card);
+            processResults();
         }
     }
 
@@ -287,7 +297,6 @@ public class BlackjackPanel extends org.sillylossy.games.common.ui.BetPanel {
          */
         @Override
         public void actionPerformed(ActionEvent event) {
-            getGame().standAction();
             processResults();
         }
     }

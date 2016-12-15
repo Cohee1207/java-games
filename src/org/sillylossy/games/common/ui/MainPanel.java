@@ -12,6 +12,7 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.io.IOException;
 
 import static org.sillylossy.games.common.Main.getGameController;
 
@@ -54,7 +55,6 @@ public class MainPanel extends JPanel {
      * A GUI-table of statistics.
      */
     private final JTable statTable = new JTable();
-    private final JList<String> gamesList = new JList<>();
     /**
      * Reference to game panel of selected game.
      */
@@ -72,6 +72,14 @@ public class MainPanel extends JPanel {
         add(createPlayerSelectionPanel(), PLAYER_SELECTOR);
         add(createStatPanel(), STAT_PANEL);
         add(createGameSelector(), GAME_SELECTOR);
+    }
+
+    private static GridBagConstraints getGBC(int y, int x) {
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.gridx = x;
+        gbc.gridy = y;
+        return gbc;
     }
 
     /**
@@ -95,15 +103,16 @@ public class MainPanel extends JPanel {
      */
     private JPanel createGameSelector() {
         JPanel panel = new JPanel();
-        panel.setLayout(new BorderLayout());
-        DefaultListModel<String> listModel = new DefaultListModel<>();
-        gamesList.setModel(listModel);
-        listModel.addElement(BlackjackGame.GAME_NAME);
-        listModel.addElement(VideoPokerGame.GAME_NAME);
-        panel.add(new JScrollPane(gamesList), BorderLayout.CENTER);
-        JButton btnAccept = new JButton("Accept");
-        btnAccept.addActionListener(new SelectGameButtonActionListener());
-        panel.add(btnAccept, BorderLayout.SOUTH);
+        GridBagLayout gbl = new GridBagLayout();
+        gbl.rowHeights = new int[]{0, 0};
+        gbl.columnWidths = new int[]{0, 0};
+        panel.setLayout(gbl);
+        try {
+            panel.add(new SelectGameButton(BlackjackGame.getIcon(), BlackjackGame.GAME_NAME), getGBC(0, 0));
+            panel.add(new SelectGameButton(VideoPokerGame.getIcon(), VideoPokerGame.GAME_NAME), getGBC(1, 1));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return panel;
     }
 
@@ -112,6 +121,7 @@ public class MainPanel extends JPanel {
      */
     public void flipToGameSelection() {
         Main.getUI().setTitle("Select a game");
+        Main.getUI().updateStatus("Click on a button with a game you'd like to play");
         setInGame(false);
         gameLayout.show(this, GAME_SELECTOR);
     }
@@ -183,6 +193,7 @@ public class MainPanel extends JPanel {
             listModel.addElement(player);
         }
         playersList.setModel(listModel);
+        Main.getUI().updateStatus("Select a player profile or register");
         gameLayout.show(this, PLAYER_SELECTOR);
     }
 
@@ -209,6 +220,17 @@ public class MainPanel extends JPanel {
      */
     void setInGame(boolean inGame) {
         this.inGame = inGame;
+    }
+
+    private class SelectGameButton extends JButton {
+
+        String tag;
+
+        SelectGameButton(Image image, String tag) {
+            setIcon(new ImageIcon(image));
+            this.tag = tag;
+            addActionListener(new SelectGameButtonAction(tag));
+        }
     }
 
     /**
@@ -292,7 +314,13 @@ public class MainPanel extends JPanel {
         }
     }
 
-    private class SelectGameButtonActionListener extends AbstractAction {
+    private class SelectGameButtonAction extends AbstractAction {
+        String tag;
+
+        SelectGameButtonAction(String tag) {
+            this.tag = tag;
+        }
+
         /**
          * Sets an active game.
          */
@@ -304,7 +332,7 @@ public class MainPanel extends JPanel {
             if (Main.getGame() != null) {
                 player = Main.getGame().getPlayer();
             }
-            switch (gamesList.getSelectedValue()) {
+            switch (tag) {
                 case BlackjackGame.GAME_NAME:
                     game = new BlackjackGame();
                     panel = new BlackjackPanel();

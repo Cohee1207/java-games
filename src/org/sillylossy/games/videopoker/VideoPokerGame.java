@@ -5,18 +5,25 @@ import org.sillylossy.games.common.cards.Card;
 import org.sillylossy.games.common.cards.CardRank;
 import org.sillylossy.games.common.cards.Deck;
 import org.sillylossy.games.common.game.CardGame;
+import org.sillylossy.games.common.game.StatEvent;
+import org.sillylossy.games.common.ui.images.CardImageController;
 import org.sillylossy.games.videopoker.PokerCombinations.Combination;
 
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.io.IOException;
 import java.util.EnumMap;
 import java.util.Map;
-
-import static org.sillylossy.games.videopoker.PokerCombinations.combinationStringMap;
 
 public class VideoPokerGame extends CardGame {
 
     public static final String GAME_NAME = "Video poker";
 
     private Map<Combination, Integer> payTable;
+
+    public static Image getIcon() throws IOException {
+        return ImageIO.read(VideoPokerGame.class.getResourceAsStream(GAME_NAME + CardImageController.IMAGE_EXT));
+    }
 
     private Map<Combination, Integer> createPayTable(int bet) {
         Map<Combination, Integer> table = new EnumMap<>(Combination.class);
@@ -49,47 +56,59 @@ public class VideoPokerGame extends CardGame {
         int pay = 0;
         Card[] cards = getPlayer().getHand().getCards();
         PokerCombinations combinations = PokerCombinations.getCombinations(cards, MIN_CARD);
+        StatEvent statEvent = StatEvent.LOST;
         switch (combinations.getBestCombination()) {
             case OTHER:
-                result = combinationStringMap.get(Combination.OTHER) + ". You've lost your bet";
+                result = PokerCombinations.toString(Combination.OTHER) + ". You've lost your bet";
+                statEvent = StatEvent.LOST;
                 break;
             case ONE_PAIR:
                 pay = payTable.get(Combination.ONE_PAIR);
-                result = combinationStringMap.get(Combination.ONE_PAIR) + ". You keep your bet";
+                result = PokerCombinations.toString(Combination.ONE_PAIR) + ". You keep your bet";
+                statEvent = StatEvent.PUSH;
                 break;
             case TWO_PAIR:
                 pay = payTable.get(Combination.TWO_PAIR);
-                result = combinationStringMap.get(Combination.TWO_PAIR) + ". You've won " + pay + "$";
+                result = PokerCombinations.toString(Combination.TWO_PAIR) + ". You've won " + pay + "$";
+                statEvent = StatEvent.WON;
                 break;
             case THREE_CARDS:
                 pay = payTable.get(Combination.THREE_CARDS);
-                result = combinationStringMap.get(Combination.THREE_CARDS) + ". You've won " + pay + "$";
+                result = PokerCombinations.toString(Combination.THREE_CARDS) + ". You've won " + pay + "$";
+                statEvent = StatEvent.WON;
                 break;
             case STRAIGHT:
                 pay = payTable.get(Combination.STRAIGHT);
-                result = combinationStringMap.get(Combination.STRAIGHT) + ". You've won " + pay + "$";
+                result = PokerCombinations.toString(Combination.STRAIGHT) + ". You've won " + pay + "$";
+                statEvent = StatEvent.WON;
                 break;
             case FLUSH:
                 pay = payTable.get(Combination.FLUSH);
-                result = combinationStringMap.get(Combination.FLUSH) + ". You've won " + pay + "$";
+                result = PokerCombinations.toString(Combination.FLUSH) + ". You've won " + pay + "$";
+                statEvent = StatEvent.WON;
                 break;
             case FULL_HOUSE:
                 pay = payTable.get(Combination.FOUR_CARDS);
-                result = combinationStringMap.get(Combination.FULL_HOUSE) + ". You've won " + pay + "$";
+                result = PokerCombinations.toString(Combination.FULL_HOUSE) + ". You've won " + pay + "$";
+                statEvent = StatEvent.WON;
                 break;
             case FOUR_CARDS:
                 pay = payTable.get(Combination.FOUR_CARDS);
-                result = combinationStringMap.get(Combination.FOUR_CARDS) + ". You've won " + pay + "$";
+                result = PokerCombinations.toString(Combination.FOUR_CARDS) + ". You've won " + pay + "$";
+                statEvent = StatEvent.WON;
                 break;
             case STRAIGHT_FLUSH:
                 pay = payTable.get(Combination.STRAIGHT_FLUSH);
-                result = combinationStringMap.get(Combination.STRAIGHT_FLUSH) + ". You've won " + pay + "$";
+                result = PokerCombinations.toString(Combination.STRAIGHT_FLUSH) + ". You've won " + pay + "$";
+                statEvent = StatEvent.WON;
                 break;
             case ROYAL_FLUSH:
                 pay = payTable.get(Combination.ROYAL_FLUSH);
-                result = combinationStringMap.get(Combination.ROYAL_FLUSH) + ". You've won " + pay + "$";
+                result = PokerCombinations.toString(Combination.ROYAL_FLUSH) + ". You've won " + pay + "$";
+                statEvent = StatEvent.WON;
                 break;
         }
+        Main.getGameController().addStatEvent(player, statEvent);
         player.increaseScore(pay);
         reset();
         Main.saveData();

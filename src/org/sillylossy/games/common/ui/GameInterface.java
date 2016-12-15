@@ -11,7 +11,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.event.WindowStateListener;
 import java.util.Map;
 
 /**
@@ -22,28 +21,57 @@ public class GameInterface extends JFrame {
     /**
      * A minimal window size.
      */
-    private static final Dimension minWindowSize = new Dimension(750, 560);
+    private static final Dimension WINDOW_SIZE = new Dimension(690, 560);
+
+    static {
+        GameInterface.setLookAndFeel();
+    }
 
     /**
      * Main panel of GUI.
      */
-    private final MainPanel mainPanel;
+    private final MainPanel mainPanel = new MainPanel();
+    /**
+     * Label with games status (current player, hand value, etc).
+     */
+    private final JLabel lblStatus = new JLabel();
 
     /**
      * Creates a GUI and assign listeners.
      */
     public GameInterface() {
-        setLookAndFeel();
         addWindowListener(new WindowClosingListener());
-        addWindowStateListener(new WindowStateChangeListener());
         setJMenuBar(createMenu());
-        setMinimumSize(minWindowSize);
         setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-        mainPanel = new MainPanel();
-        setContentPane(mainPanel);
-        setSize(minWindowSize);
+        setLayout(new BorderLayout());
+        add(mainPanel, BorderLayout.CENTER);
+        add(createStatusBar(), BorderLayout.SOUTH);
+        setSize(WINDOW_SIZE);
         setLocationRelativeTo(null);
+        setResizable(false);
         setVisible(true);
+    }
+
+    /**
+     * Sets a look and feel of an application to "Nimbus" LaF or system-default if it's unavailable.
+     * When system-default fails, LaF would be default ("Metal").
+     */
+    private static void setLookAndFeel() {
+        try {
+            for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (Exception e) {
+            try {
+                UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+            } catch (ClassNotFoundException | InstantiationException | IllegalAccessException
+                    | UnsupportedLookAndFeelException ex) {
+                ex.printStackTrace();
+            }
+        }
     }
 
     /**
@@ -85,25 +113,16 @@ public class GameInterface extends JFrame {
     }
 
     /**
-     * Sets a look and feel of an application to "Nimbus" LaF or system-default if it's unavailable.
-     * When system-default fails, LaF would be default ("Metal").
+     * Creates status bar with status label.
      */
-    private void setLookAndFeel() {
-        try {
-            for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (Exception e) {
-            try {
-                UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-            } catch (ClassNotFoundException | InstantiationException | IllegalAccessException
-                    | UnsupportedLookAndFeelException ex) {
-                ex.printStackTrace();
-            }
-        }
+    private JPanel createStatusBar() {
+        JPanel statusBar = new JPanel();
+        statusBar.add(lblStatus);
+        return statusBar;
+    }
+
+    public void updateStatus(String status) {
+        lblStatus.setText(status);
     }
 
     /**
@@ -130,7 +149,7 @@ public class GameInterface extends JFrame {
      * Asks for confirm and exits the game if the answer is "Yes".
      */
     private void exit() {
-        if (Main.getUI().getMainPanel().isInGame()) {
+        if (mainPanel.isInGame()) {
             if (confirm("This will end your current game. Sure?")) {
                 dispose();
             }
@@ -162,7 +181,7 @@ public class GameInterface extends JFrame {
          */
         @Override
         public void actionPerformed(ActionEvent e) {
-            getMainPanel().flipToStatistics();
+            mainPanel.flipToStatistics();
             Map<Player, Statistics> stats = Main.getGameController().getStatistics();
             int count = stats.size();
             Player[] players = stats.keySet().toArray(new Player[count]);
@@ -171,7 +190,7 @@ public class GameInterface extends JFrame {
             for (int i = 0; i < vector.length; i++) {
                 int won = stats.get(players[i]).getGamesWon();
                 int lost = stats.get(players[i]).getGamesLost();
-                int stay = stats.get(players[i]).getGamesPushed();
+                int stay = stats.get(players[i]).getGamesDrawn();
                 int total = won + lost + stay;
                 vector[i][0] = players[i].toString();
                 vector[i][1] = total;
@@ -180,21 +199,6 @@ public class GameInterface extends JFrame {
                 vector[i][4] = stay;
             }
             getMainPanel().setStats(new DefaultTableModel(vector, labels));
-        }
-    }
-
-    /**
-     * Window state change event listener.
-     */
-    private final class WindowStateChangeListener implements WindowStateListener {
-        /**
-         * Redraws cards when window state changes.
-         */
-        @Override
-        public void windowStateChanged(WindowEvent e) {
-            if (mainPanel.getGamePanel() != null) {
-                mainPanel.getGamePanel().redraw();
-            }
         }
     }
 
@@ -244,9 +248,9 @@ public class GameInterface extends JFrame {
     private class ChangeGameMenuItemListener extends AbstractAction {
         @Override
         public void actionPerformed(ActionEvent e) {
-            Main.getUI().getMainPanel().setInGame(false);
             Main.setGame(null);
             mainPanel.setGamePanel(null);
+            mainPanel.setInGame(false);
             mainPanel.flipToGameSelection();
         }
     }
@@ -254,8 +258,13 @@ public class GameInterface extends JFrame {
     private class ChangePlayerMenuItemListener extends AbstractAction {
         @Override
         public void actionPerformed(ActionEvent e) {
-            Main.getUI().getMainPanel().setInGame(false);
+            if (Main.getGame() == null) {
+                return;
+            }
+            Main.getGame().reset();
             Main.getGame().setPlayer(null);
+            mainPanel.getGamePanel().clear();
+            mainPanel.setInGame(false);
             mainPanel.flipToPlayerSelection();
         }
     }

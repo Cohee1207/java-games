@@ -12,21 +12,13 @@ public abstract class GamePanel extends JPanel {
 
     protected static final String NEW_GAME_BUTTON_TEXT = "New game";
     protected static final Color BACKGROUND_COLOR = new Color(34, 139, 34);
-    protected final JPanel gameArea = new JPanel();
-    /**
-     * Label with games status (current player, hand value, etc).
-     */
-    protected final JLabel lblStatus = new JLabel();
 
     /**
      * Constructs a game panel - sets listener and colors.
      */
     GamePanel() {
         addComponentListener(new ResizePanelListener());
-        gameArea.setBackground(BACKGROUND_COLOR);
-        setLayout(new BorderLayout());
-        add(createStatusBar(), BorderLayout.SOUTH);
-        add(gameArea, BorderLayout.CENTER);
+        setBackground(BACKGROUND_COLOR);
     }
 
     /**
@@ -36,14 +28,6 @@ public abstract class GamePanel extends JPanel {
 
     public abstract void clear();
 
-    /**
-     * Creates status bar with status label.
-     */
-    private JPanel createStatusBar() {
-        JPanel statusBar = new JPanel();
-        statusBar.add(lblStatus);
-        return statusBar;
-    }
 
     /**
      * Updates player's status in status bar.

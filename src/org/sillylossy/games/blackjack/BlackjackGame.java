@@ -5,6 +5,11 @@ import org.sillylossy.games.common.cards.Card;
 import org.sillylossy.games.common.cards.Deck;
 import org.sillylossy.games.common.game.CardGame;
 import org.sillylossy.games.common.game.StatEvent;
+import org.sillylossy.games.common.ui.images.CardImageController;
+
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.io.IOException;
 
 /**
  * Blackjack game model.
@@ -23,6 +28,14 @@ public class BlackjackGame extends CardGame {
      * A dealer assigned to a game instance.
      */
     private final Dealer dealer = new Dealer();
+
+    public static Image getIcon() throws IOException {
+        return ImageIO.read(BlackjackGame.class.getResourceAsStream(GAME_NAME + CardImageController.IMAGE_EXT));
+    }
+
+    String getDealerValue() {
+        return getValue(dealer.getHand().getCards()) + " points";
+    }
 
     /**
      * Returns a numeric value that represents a hand's value.
@@ -109,6 +122,7 @@ public class BlackjackGame extends CardGame {
     public void betAction(int bet) {
         dealCards();
         player.setBet(bet);
+        player.decreaseScore(bet);
     }
 
     /**
@@ -169,38 +183,40 @@ public class BlackjackGame extends CardGame {
         int playerValue = getValue(playerCards);
         boolean playerBlackjack = isBlackJack(playerCards);
         boolean dealerBlackjack = isBlackJack(dealerCards);
+        int increase = 0;
+        StatEvent statEvent = StatEvent.PUSH;
         if (!playerBlackjack && dealerBlackjack) {
-            player.decreaseScore(bet);
-            Main.getGameController().addStatEvent(player, StatEvent.LOST);
+            statEvent = StatEvent.LOST;
             result = "You've lost. Dealer has blackjack";
         } else if (playerBlackjack && dealerBlackjack) {
-            Main.getGameController().addStatEvent(player, StatEvent.PUSH);
+            increase = bet;
+            statEvent = StatEvent.PUSH;
             result = "Push. Dealer has blackjack too";
         } else if (playerBlackjack) {
-            player.increaseScore(Math.round(bet * 1.5f));
-            Main.getGameController().addStatEvent(player, StatEvent.WON);
+            increase = bet * 3;
+            statEvent = StatEvent.WON;
             result = "You've won: blackjack";
         } else if (playerValue > BLACKJACK) {
-            player.decreaseScore(bet);
-            Main.getGameController().addStatEvent(player, StatEvent.LOST);
+            statEvent = StatEvent.LOST;
             result = "You've lost: bust";
         } else if (dealerValue > BLACKJACK && playerValue <= BLACKJACK) {
-            player.increaseScore(bet);
-            Main.getGameController().addStatEvent(player, StatEvent.WON);
+            increase = 2 * bet;
+            statEvent = StatEvent.WON;
             result = "You've won: dealer bust";
         } else if (playerValue > dealerValue) {
-            player.increaseScore(bet);
-            Main.getGameController().addStatEvent(player, StatEvent.WON);
+            increase = 2 * bet;
+            statEvent = StatEvent.WON;
             result = "You've won: you have more points than dealer";
         } else if (playerValue == dealerValue) {
-            Main.getGameController().addStatEvent(player, StatEvent.PUSH);
+            increase = bet;
+            statEvent = StatEvent.PUSH;
             result = "Push. Your points with dealer are equal.";
         } else if (playerValue < dealerValue) {
-            player.decreaseScore(player.getBet());
-            Main.getGameController().addStatEvent(player, StatEvent.LOST);
-            result = "You've lost: dealer has more points (" + dealerValue + ")";
+            statEvent = StatEvent.LOST;
+            result = "You've lost: dealer has more points";
         }
-        reset();
+        player.increaseScore(increase);
+        Main.getGameController().addStatEvent(player, statEvent);
         Main.saveData();
         return result;
     }
@@ -212,7 +228,6 @@ public class BlackjackGame extends CardGame {
     public void reset() {
         player.getHand().clear();
         player.setBet(0);
-        player.setStand(false);
         dealer.getHand().clear();
     }
 
@@ -222,8 +237,6 @@ public class BlackjackGame extends CardGame {
         if (isBlackJack(playerCards)) {
             return true;
         } else if (getValue(playerCards) > BLACKJACK) {
-            return true;
-        } else if (player.isStand()) {
             return true;
         }
         return false;
@@ -241,13 +254,6 @@ public class BlackjackGame extends CardGame {
     @Override
     public String getGameName() {
         return GAME_NAME;
-    }
-
-    /**
-     * Performs a stand action.
-     */
-    void standAction() {
-        player.setStand(true);
     }
 
 }

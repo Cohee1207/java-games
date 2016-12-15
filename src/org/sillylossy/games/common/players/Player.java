@@ -26,11 +26,6 @@ public class Player extends Participant implements java.io.Serializable {
     private int score;
 
     /**
-     * Game end flag.
-     */
-    private transient boolean stand;
-
-    /**
      * Creates a player with specified name.
      *
      * @param name player's name
@@ -80,20 +75,6 @@ public class Player extends Participant implements java.io.Serializable {
      */
     public void increaseScore(int amount) {
         score += amount;
-    }
-
-    /**
-     * Returns a player "stand" flag.
-     */
-    public boolean isStand() {
-        return stand;
-    }
-
-    /**
-     * Sets a player "stand" flag.
-     */
-    public void setStand(boolean stand) {
-        this.stand = stand;
     }
 
     /**

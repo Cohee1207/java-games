@@ -4,66 +4,87 @@ import org.sillylossy.games.common.cards.Card;
 import org.sillylossy.games.common.cards.CardRank;
 import org.sillylossy.games.common.cards.CardSuit;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.EnumSet;
 
 class PokerCombinations {
 
-    static final Map<Combination, String> combinationStringMap = getCombinationStrings();
     private static final int PAIR_REPEATS = 1;
     private static final int THREE_REPEATS = 2;
     private static final int FOUR_REPEATS = 3;
-    private static final Map<CardRank, Integer> aceIsLowValues = getRankValues(false);
-    private static final Map<CardRank, Integer> aceIsHighValues = getRankValues(true);
-    private static final Comparator<Card> aceIsLowComparator = new CardComparator(aceIsLowValues);
-    private static final Comparator<Card> aceIsHighComparator = new CardComparator(aceIsHighValues);
+    private static final Comparator<Card> aceIsLowComparator = new CardComparator(false);
+    private static final Comparator<Card> aceIsHighComparator = new CardComparator(true);
     private final CardRank minPairRank;
     private final int numberOfRepeats;
-    private final EnumSet<CardRank> rankEnumSet;
+    private final EnumSet<CardRank> repeatsSet;
     private final Card[] cards;
 
     private PokerCombinations(int repeats, EnumSet<CardRank> set, Card[] cards, CardRank minPairRank) {
         numberOfRepeats = repeats;
-        rankEnumSet = set;
+        repeatsSet = set;
         this.cards = cards;
         this.minPairRank = minPairRank;
     }
 
-    private static Map<Combination, String> getCombinationStrings() {
-        EnumMap<Combination, String> map = new EnumMap<>(Combination.class);
-        map.put(Combination.OTHER, "Other");
-        map.put(Combination.ONE_PAIR, "One pair (jacks or better)");
-        map.put(Combination.TWO_PAIR, "Two pairs");
-        map.put(Combination.THREE_CARDS, "Three of kind");
-        map.put(Combination.STRAIGHT, "Straight");
-        map.put(Combination.FLUSH, "Flush");
-        map.put(Combination.FULL_HOUSE, "Full house");
-        map.put(Combination.FOUR_CARDS, "Four of kind");
-        map.put(Combination.STRAIGHT_FLUSH, "Straight flush");
-        map.put(Combination.ROYAL_FLUSH, "Royal flush");
-        return map;
+    static String toString(Combination combination) {
+        switch (combination) {
+            case OTHER:
+                return "Other";
+            case ONE_PAIR:
+                return "One pair (jacks or better)";
+            case TWO_PAIR:
+                return "Two pairs";
+            case THREE_CARDS:
+                return "Three of kind";
+            case STRAIGHT:
+                return "Straight";
+            case FLUSH:
+                return "Flush";
+            case FULL_HOUSE:
+                return "Full house";
+            case FOUR_CARDS:
+                return "Four of kind";
+            case STRAIGHT_FLUSH:
+                return "Straight flush";
+            case ROYAL_FLUSH:
+                return "Royal flush";
+            default:
+                throw new IllegalArgumentException();
+        }
     }
 
-    private static Map<CardRank, Integer> getRankValues(boolean aceHigh) {
-        final int HIGH = 14, LOW = 1;
-        Map<CardRank, Integer> values = new EnumMap<>(CardRank.class);
-        putCommonValues(values);
-        values.put(CardRank.ACE, aceHigh ? HIGH : LOW);
-        return values;
-    }
-
-    private static void putCommonValues(Map<CardRank, Integer> map) {
-        map.put(CardRank.TWO, 2);
-        map.put(CardRank.THREE, 3);
-        map.put(CardRank.FOUR, 4);
-        map.put(CardRank.FIVE, 5);
-        map.put(CardRank.SIX, 6);
-        map.put(CardRank.SEVEN, 7);
-        map.put(CardRank.EIGHT, 8);
-        map.put(CardRank.NINE, 9);
-        map.put(CardRank.TEN, 10);
-        map.put(CardRank.JACK, 11);
-        map.put(CardRank.QUEEN, 12);
-        map.put(CardRank.KING, 13);
+    private static int getRankValue(CardRank rank, boolean aceIsHigh) {
+        switch (rank) {
+            case ACE:
+                return aceIsHigh ? 14 : 1;
+            case EIGHT:
+                return 8;
+            case FIVE:
+                return 5;
+            case FOUR:
+                return 4;
+            case JACK:
+                return 11;
+            case KING:
+                return 13;
+            case NINE:
+                return 9;
+            case QUEEN:
+                return 12;
+            case SEVEN:
+                return 7;
+            case SIX:
+                return 6;
+            case TEN:
+                return 10;
+            case THREE:
+                return 3;
+            case TWO:
+                return 2;
+            default:
+                throw new IllegalArgumentException();
+        }
     }
 
     static PokerCombinations getCombinations(Card[] cards, CardRank minPairRank) {
@@ -80,35 +101,34 @@ class PokerCombinations {
     }
 
     Combination getBestCombination() {
-        Combination best = Combination.OTHER;
-        if (hasOnePair()) {
-            best = Combination.ONE_PAIR;
-        }
-        if (hasTwoPair()) {
-            best = Combination.TWO_PAIR;
-        }
-        if (hasThree()) {
-            best = Combination.THREE_CARDS;
-        }
-        if (hasStraight()) {
-            best = Combination.STRAIGHT;
-        }
-        if (hasFlush()) {
-            best = Combination.FLUSH;
-        }
-        if (hasFullHouse()) {
-            best = Combination.FULL_HOUSE;
-        }
-        if (hasFour()) {
-            best = Combination.FOUR_CARDS;
+        if (hasRoyalFlush()) {
+            return Combination.ROYAL_FLUSH;
         }
         if (hasStraightFlush()) {
-            best = Combination.STRAIGHT_FLUSH;
+            return Combination.STRAIGHT_FLUSH;
         }
-        if (hasRoyalFlush()) {
-            best = Combination.ROYAL_FLUSH;
+        if (hasFour()) {
+            return Combination.FOUR_CARDS;
         }
-        return best;
+        if (hasFullHouse()) {
+            return Combination.FULL_HOUSE;
+        }
+        if (hasFlush()) {
+            return Combination.FLUSH;
+        }
+        if (hasStraight()) {
+            return Combination.STRAIGHT;
+        }
+        if (hasThree()) {
+            return Combination.THREE_CARDS;
+        }
+        if (hasTwoPair()) {
+            return Combination.TWO_PAIR;
+        }
+        if (hasOnePair()) {
+            return Combination.ONE_PAIR;
+        }
+        return Combination.OTHER;
     }
 
     boolean hasStraight() {
@@ -125,10 +145,9 @@ class PokerCombinations {
 
     private boolean hasStraight(boolean aceIsHigh) {
         Arrays.sort(cards, aceIsHigh ? aceIsHighComparator : aceIsLowComparator);
-        Map<CardRank, Integer> values = aceIsHigh ? aceIsHighValues : aceIsLowValues;
         for (int i = 0; i < cards.length - 1; i++) {
-            int current = values.get(cards[i].getCardRank());
-            int next = values.get(cards[i + 1].getCardRank());
+            int current = getRankValue(cards[i].getCardRank(), aceIsHigh);
+            int next = getRankValue(cards[i + 1].getCardRank(), aceIsHigh);
             if (next - current != 1) {
                 return false;
             }
@@ -148,24 +167,24 @@ class PokerCombinations {
 
     boolean hasOnePair() {
         return numberOfRepeats == PAIR_REPEATS
-                && rankEnumSet.size() == 1
-                && aceIsHighValues.get(rankEnumSet.iterator().next()) >= aceIsHighValues.get(minPairRank);
+                && repeatsSet.size() == 1
+                && getRankValue(repeatsSet.iterator().next(), true) >= getRankValue(minPairRank, true);
     }
 
     boolean hasTwoPair() {
-        return numberOfRepeats == THREE_REPEATS && rankEnumSet.size() == 2;
+        return numberOfRepeats == THREE_REPEATS && repeatsSet.size() == 2;
     }
 
     boolean hasThree() {
-        return numberOfRepeats == THREE_REPEATS && rankEnumSet.size() == 1;
+        return numberOfRepeats == THREE_REPEATS && repeatsSet.size() == 1;
     }
 
     boolean hasFour() {
-        return numberOfRepeats == FOUR_REPEATS && rankEnumSet.size() == 1;
+        return numberOfRepeats == FOUR_REPEATS && repeatsSet.size() == 1;
     }
 
     boolean hasFullHouse() {
-        return numberOfRepeats == FOUR_REPEATS && rankEnumSet.size() == 2;
+        return numberOfRepeats == FOUR_REPEATS && repeatsSet.size() == 2;
     }
 
     enum Combination {
@@ -173,15 +192,16 @@ class PokerCombinations {
     }
 
     private static final class CardComparator implements Comparator<Card> {
-        final Map<CardRank, Integer> values;
 
-        CardComparator(Map<CardRank, Integer> map) {
-            this.values = map;
+        boolean aceIsHigh;
+
+        CardComparator(boolean aceIsHigh) {
+            this.aceIsHigh = aceIsHigh;
         }
 
         @Override
         public int compare(Card o1, Card o2) {
-            return Integer.compare(values.get(o1.getCardRank()), values.get(o2.getCardRank()));
+            return Integer.compare(getRankValue(o1.getCardRank(), aceIsHigh), getRankValue(o2.getCardRank(), aceIsHigh));
         }
     }
 
