@@ -3,7 +3,8 @@ package org.sillylossy.games.blackjack;
 import org.sillylossy.games.common.Main;
 import org.sillylossy.games.common.cards.Card;
 import org.sillylossy.games.common.players.Player;
-import org.sillylossy.games.common.ui.images.CardImage;
+import org.sillylossy.games.common.resources.CardImage;
+import org.sillylossy.games.common.ui.CardPanel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,7 +15,7 @@ import java.util.List;
 /**
  * Game panel for blackjack.
  */
-public class BlackjackPanel extends org.sillylossy.games.common.ui.BetPanel {
+public class BlackjackPanel extends CardPanel {
 
     private static final String YOUR_CARDS_TEXT = "Your cards";
 
@@ -116,7 +117,7 @@ public class BlackjackPanel extends org.sillylossy.games.common.ui.BetPanel {
     }
 
     /**
-     * Displays player's card images with height = window / 3 (experimental value).
+     * Displays player's card resources with height = window / 3 (experimental value).
      */
     private void displayPlayersCards() {
         if (getGame().getPlayer() == null) {
@@ -243,6 +244,11 @@ public class BlackjackPanel extends org.sillylossy.games.common.ui.BetPanel {
         btnDouble.addActionListener(new DoubleButtonAction());
         actionButtonsPanel.add(btnDouble);
         return actionButtonsPanel;
+    }
+
+    @Override
+    public int getImageHeight() {
+        return Main.getUI().getHeight() / 3;
     }
 
     private final class NewGameButtonAction extends AbstractAction {

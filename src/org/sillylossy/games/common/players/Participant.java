@@ -10,20 +10,13 @@ public abstract class Participant {
     /**
      * A participant's hand.
      */
-    private transient Hand hand;
+    private transient Hand hand = new Hand();
 
     /**
      * Gets a participant's hand.
      */
     public Hand getHand() {
         return hand;
-    }
-
-    /**
-     * Sets a hand field with param value.
-     */
-    public void setHand(Hand hand) {
-        this.hand = hand;
     }
 
 }

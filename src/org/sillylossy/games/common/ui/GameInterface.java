@@ -3,6 +3,7 @@ package org.sillylossy.games.common.ui;
 import org.sillylossy.games.common.Main;
 import org.sillylossy.games.common.game.Statistics;
 import org.sillylossy.games.common.players.Player;
+import org.sillylossy.games.common.resources.ResourceManager;
 
 import javax.swing.*;
 import javax.swing.UIManager.LookAndFeelInfo;
@@ -171,7 +172,6 @@ public class GameInterface extends JFrame {
         }
     }
 
-
     /**
      * "Statistics" menu item action listener.
      */
@@ -225,7 +225,7 @@ public class GameInterface extends JFrame {
         @Override
         public void actionPerformed(ActionEvent e) {
             if (Main.getGame() != null) {
-                new RulesBrowser(Main.getGame().getRules());
+                new RulesBrowser(ResourceManager.getInstance().getRules(Main.getGame().getGameName()));
             }
         }
     }
@@ -240,7 +240,7 @@ public class GameInterface extends JFrame {
         @Override
         public void actionPerformed(ActionEvent event) {
             alert("Author: SillyLossy (http://github.com/sillylossy).\n\n" +
-                    "Card images: https://code.google.com/archive/p/vector-playing-cards/ \n" +
+                    "Card resources: https://code.google.com/archive/p/vector-playing-cards/ \n" +
                     "Card back image: http://svg-cards.sourceforge.net/ \n");
         }
     }

@@ -5,11 +5,6 @@ import org.sillylossy.games.common.cards.Card;
 import org.sillylossy.games.common.cards.Deck;
 import org.sillylossy.games.common.game.CardGame;
 import org.sillylossy.games.common.game.StatEvent;
-import org.sillylossy.games.common.ui.images.CardImageController;
-
-import javax.imageio.ImageIO;
-import java.awt.*;
-import java.io.IOException;
 
 /**
  * Blackjack game model.
@@ -20,18 +15,16 @@ public class BlackjackGame extends CardGame {
      * Name of the game.
      */
     public static final String GAME_NAME = "Blackjack";
+
     /**
      * How many value points needed for "blackjack".
      */
     private final static int BLACKJACK = 21;
+
     /**
      * A dealer assigned to a game instance.
      */
     private final Dealer dealer = new Dealer();
-
-    public static Image getIcon() throws IOException {
-        return ImageIO.read(BlackjackGame.class.getResourceAsStream(GAME_NAME + CardImageController.IMAGE_EXT));
-    }
 
     String getDealerValue() {
         return getValue(dealer.getHand().getCards()) + " points";
@@ -184,13 +177,13 @@ public class BlackjackGame extends CardGame {
         boolean playerBlackjack = isBlackJack(playerCards);
         boolean dealerBlackjack = isBlackJack(dealerCards);
         int increase = 0;
-        StatEvent statEvent = StatEvent.PUSH;
+        StatEvent statEvent = StatEvent.DRAW;
         if (!playerBlackjack && dealerBlackjack) {
             statEvent = StatEvent.LOST;
             result = "You've lost. Dealer has blackjack";
         } else if (playerBlackjack && dealerBlackjack) {
             increase = bet;
-            statEvent = StatEvent.PUSH;
+            statEvent = StatEvent.DRAW;
             result = "Push. Dealer has blackjack too";
         } else if (playerBlackjack) {
             increase = bet * 3;
@@ -209,7 +202,7 @@ public class BlackjackGame extends CardGame {
             result = "You've won: you have more points than dealer";
         } else if (playerValue == dealerValue) {
             increase = bet;
-            statEvent = StatEvent.PUSH;
+            statEvent = StatEvent.DRAW;
             result = "Push. Your points with dealer are equal.";
         } else if (playerValue < dealerValue) {
             statEvent = StatEvent.LOST;
@@ -244,7 +237,7 @@ public class BlackjackGame extends CardGame {
 
     @Override
     protected void dealCards() {
-        setDeck(Deck.create());
+        setDeck(Deck.getFullDeck());
         dealer.getHand().addCard(deck.draw());
         dealer.getHand().addCard(deck.draw());
         player.getHand().addCard(deck.draw());

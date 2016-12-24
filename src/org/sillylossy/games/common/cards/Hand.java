@@ -53,4 +53,15 @@ public class Hand {
         return cards.get(0);
     }
 
+    public boolean isEmpty() {
+        return cards.isEmpty();
+    }
+
+    public int size() {
+        return cards.size();
+    }
+
+    public void removeCard(Card card) {
+        cards.remove(card);
+    }
 }

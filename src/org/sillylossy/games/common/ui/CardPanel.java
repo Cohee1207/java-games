@@ -8,7 +8,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 
-public abstract class BetPanel extends GamePanel {
+public abstract class CardPanel extends GamePanel {
     /**
      * JSpinner for betting.
      */
@@ -136,6 +136,8 @@ public abstract class BetPanel extends GamePanel {
         btnBet.addActionListener(new AcceptBetButtonAction());
         return betPanel;
     }
+
+    public abstract int getImageHeight();
 
     /**
      * "Accept" bet button action listener.

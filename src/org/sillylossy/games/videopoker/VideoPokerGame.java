@@ -6,12 +6,8 @@ import org.sillylossy.games.common.cards.CardRank;
 import org.sillylossy.games.common.cards.Deck;
 import org.sillylossy.games.common.game.CardGame;
 import org.sillylossy.games.common.game.StatEvent;
-import org.sillylossy.games.common.ui.images.CardImageController;
 import org.sillylossy.games.videopoker.PokerCombinations.Combination;
 
-import javax.imageio.ImageIO;
-import java.awt.*;
-import java.io.IOException;
 import java.util.EnumMap;
 import java.util.Map;
 
@@ -20,10 +16,6 @@ public class VideoPokerGame extends CardGame {
     public static final String GAME_NAME = "Video poker";
 
     private Map<Combination, Integer> payTable;
-
-    public static Image getIcon() throws IOException {
-        return ImageIO.read(VideoPokerGame.class.getResourceAsStream(GAME_NAME + CardImageController.IMAGE_EXT));
-    }
 
     private Map<Combination, Integer> createPayTable(int bet) {
         Map<Combination, Integer> table = new EnumMap<>(Combination.class);
@@ -65,7 +57,7 @@ public class VideoPokerGame extends CardGame {
             case ONE_PAIR:
                 pay = payTable.get(Combination.ONE_PAIR);
                 result = PokerCombinations.toString(Combination.ONE_PAIR) + ". You keep your bet";
-                statEvent = StatEvent.PUSH;
+                statEvent = StatEvent.DRAW;
                 break;
             case TWO_PAIR:
                 pay = payTable.get(Combination.TWO_PAIR);
@@ -128,7 +120,7 @@ public class VideoPokerGame extends CardGame {
 
     @Override
     protected void dealCards() {
-        setDeck(Deck.create());
+        setDeck(Deck.getFullDeck());
         final int POKER_CARDS = 5;
         for (int i = 0; i < POKER_CARDS; i++) {
             player.getHand().addCard(deck.draw());

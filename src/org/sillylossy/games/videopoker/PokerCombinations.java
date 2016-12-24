@@ -193,7 +193,7 @@ class PokerCombinations {
 
     private static final class CardComparator implements Comparator<Card> {
 
-        boolean aceIsHigh;
+        final boolean aceIsHigh;
 
         CardComparator(boolean aceIsHigh) {
             this.aceIsHigh = aceIsHigh;

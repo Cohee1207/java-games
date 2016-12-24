@@ -111,4 +111,13 @@ public class Card {
     public CardSuit getCardSuit() {
         return cardSuit;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Card card = (Card) o;
+        return cardRank == card.cardRank &&
+                cardSuit == card.cardSuit;
+    }
 }

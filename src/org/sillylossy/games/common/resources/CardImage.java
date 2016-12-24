@@ -1,6 +1,5 @@
-package org.sillylossy.games.common.ui.images;
+package org.sillylossy.games.common.resources;
 
-import org.sillylossy.games.common.Main;
 import org.sillylossy.games.common.cards.Card;
 
 import javax.swing.*;
@@ -9,16 +8,14 @@ import java.awt.event.MouseListener;
 
 public class CardImage {
     /**
-     * An active images controller.
+     * An active resources controller.
      */
-    private static final CardImageController images = new CardImageController();
-    private final JLabel label;
+    private final JLabel label = new JLabel();
     private Card card;
     private boolean isFlipped = false;
 
     public CardImage(Card card, boolean flipOnClick) {
         this.card = card;
-        this.label = new JLabel();
         if (flipOnClick) {
             this.label.addMouseListener(new MouseListener() {
                 @Override
@@ -51,6 +48,12 @@ public class CardImage {
         updateIcon();
     }
 
+    public CardImage(Card card, MouseListener mouseListener) {
+        this.card = card;
+        this.label.addMouseListener(mouseListener);
+        updateIcon();
+    }
+
     public Card getCard() {
         return card;
     }
@@ -69,16 +72,12 @@ public class CardImage {
 
     public void updateIcon() {
         label.setIcon(isFlipped ?
-                new ImageIcon(images.getBackImage(getDesiredHeight())) :
-                new ImageIcon(images.getCardImage(card, getDesiredHeight())));
+                new ImageIcon(ResourceManager.getInstance().getBackImage()) :
+                new ImageIcon(ResourceManager.getInstance().getCardImage(card)));
     }
 
     public void flip() {
         isFlipped = !isFlipped;
         updateIcon();
-    }
-
-    private int getDesiredHeight() {
-        return Main.getUI().getHeight() / 3;
     }
 }

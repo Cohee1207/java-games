@@ -5,6 +5,9 @@ import org.sillylossy.games.blackjack.BlackjackPanel;
 import org.sillylossy.games.common.Main;
 import org.sillylossy.games.common.game.Game;
 import org.sillylossy.games.common.players.Player;
+import org.sillylossy.games.common.resources.ResourceManager;
+import org.sillylossy.games.durak.DurakGame;
+import org.sillylossy.games.durak.DurakPanel;
 import org.sillylossy.games.videopoker.VideoPokerGame;
 import org.sillylossy.games.videopoker.VideoPokerPanel;
 
@@ -108,8 +111,9 @@ public class MainPanel extends JPanel {
         gbl.columnWidths = new int[]{0, 0};
         panel.setLayout(gbl);
         try {
-            panel.add(new SelectGameButton(BlackjackGame.getIcon(), BlackjackGame.GAME_NAME), getGBC(0, 0));
-            panel.add(new SelectGameButton(VideoPokerGame.getIcon(), VideoPokerGame.GAME_NAME), getGBC(1, 1));
+            panel.add(new SelectGameButton(BlackjackGame.GAME_NAME), getGBC(0, 0));
+            panel.add(new SelectGameButton(VideoPokerGame.GAME_NAME), getGBC(1, 1));
+            panel.add(new SelectGameButton(DurakGame.GAME_NAME), getGBC(1, 0));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -200,7 +204,7 @@ public class MainPanel extends JPanel {
     /**
      * Gets a game panel.
      */
-    GamePanel getGamePanel() {
+    public GamePanel getGamePanel() {
         return gamePanel;
     }
 
@@ -224,11 +228,11 @@ public class MainPanel extends JPanel {
 
     private class SelectGameButton extends JButton {
 
-        String tag;
+        final String tag;
 
-        SelectGameButton(Image image, String tag) {
-            setIcon(new ImageIcon(image));
+        SelectGameButton(String tag) throws IOException {
             this.tag = tag;
+            setIcon(new ImageIcon(ResourceManager.getInstance().getGameIcon(tag)));
             addActionListener(new SelectGameButtonAction(tag));
         }
     }
@@ -315,7 +319,7 @@ public class MainPanel extends JPanel {
     }
 
     private class SelectGameButtonAction extends AbstractAction {
-        String tag;
+        final String tag;
 
         SelectGameButtonAction(String tag) {
             this.tag = tag;
@@ -340,6 +344,10 @@ public class MainPanel extends JPanel {
                 case VideoPokerGame.GAME_NAME:
                     game = new VideoPokerGame();
                     panel = new VideoPokerPanel();
+                    break;
+                case DurakGame.GAME_NAME:
+                    game = new DurakGame();
+                    panel = new DurakPanel();
                     break;
                 default:
                     throw new UnsupportedOperationException();

@@ -3,7 +3,6 @@ package org.sillylossy.games.blackjack;
 import org.sillylossy.games.common.Main;
 import org.sillylossy.games.common.cards.Card;
 import org.sillylossy.games.common.cards.Deck;
-import org.sillylossy.games.common.cards.Hand;
 import org.sillylossy.games.common.players.Participant;
 
 import java.util.ArrayList;
@@ -13,13 +12,6 @@ import java.util.List;
  * Represents a dealer. Game is played against that participant.
  */
 class Dealer extends Participant {
-
-    /**
-     * Initializes a dealer with new hand.
-     */
-    Dealer() {
-        setHand(new Hand());
-    }
 
     /**
      * Peeks an open card of dealer.

@@ -3,8 +3,8 @@ package org.sillylossy.games.videopoker;
 import org.sillylossy.games.common.Main;
 import org.sillylossy.games.common.cards.Card;
 import org.sillylossy.games.common.players.Player;
-import org.sillylossy.games.common.ui.BetPanel;
-import org.sillylossy.games.common.ui.images.CardImage;
+import org.sillylossy.games.common.resources.CardImage;
+import org.sillylossy.games.common.ui.CardPanel;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -17,7 +17,7 @@ import java.util.Map;
 
 import static org.sillylossy.games.videopoker.PokerCombinations.Combination;
 
-public class VideoPokerPanel extends BetPanel {
+public class VideoPokerPanel extends CardPanel {
 
     private static final String PLAY_BUTTON_TEXT = "Play";
 
@@ -34,6 +34,17 @@ public class VideoPokerPanel extends BetPanel {
     private final JScrollPane payTablePane = new JScrollPane(payTable);
 
     private final JLabel lblHint = createLabel("Click on cards you want to replace");
+    private final ActionListener newGameButtonListener = new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            clear();
+            start();
+            btnPlay.removeActionListener(this);
+            btnPlay.setText(PLAY_BUTTON_TEXT);
+            btnPlay.addActionListener(playButtonListener);
+            btnDiscard.setEnabled(true);
+        }
+    };
     private final ActionListener playButtonListener = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -45,17 +56,6 @@ public class VideoPokerPanel extends BetPanel {
                 }
             }
             processResults();
-        }
-    };
-    private final ActionListener newGameButtonListener = new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            clear();
-            start();
-            btnPlay.removeActionListener(this);
-            btnPlay.setText(PLAY_BUTTON_TEXT);
-            btnPlay.addActionListener(playButtonListener);
-            btnDiscard.setEnabled(true);
         }
     };
 
@@ -152,6 +152,11 @@ public class VideoPokerPanel extends BetPanel {
         actions.add(btnPlay);
         actions.add(btnDiscard);
         return actions;
+    }
+
+    @Override
+    public int getImageHeight() {
+        return Main.getUI().getHeight() / 3;
     }
 
     @Override

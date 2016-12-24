@@ -1,6 +1,7 @@
 package org.sillylossy.games.common.cards;
 
 import java.util.ArrayList;
+import java.util.EmptyStackException;
 import java.util.List;
 import java.util.Stack;
 
@@ -10,14 +11,23 @@ import java.util.Stack;
 public class Deck {
 
     /**
-     * Computed field that contains a deck's length.
-     */
-    private static final int deckLength = CardSuit.values().length * CardRank.values().length;
-
-    /**
      * Contains a basic (ordered) deck.
      */
-    public static final List<Card> INITIAL_DECK = createInitial();
+    public static final List<Card> FULL_DECK = createDeck(CardRank.values());
+
+    private static final CardRank[] SHORT_RANKS = new CardRank[]{
+            CardRank.SIX,
+            CardRank.SEVEN,
+            CardRank.EIGHT,
+            CardRank.NINE,
+            CardRank.TEN,
+            CardRank.JACK,
+            CardRank.QUEEN,
+            CardRank.KING,
+            CardRank.ACE
+    };
+
+    private static final List<Card> SHORT_DECK = createDeck(SHORT_RANKS);
 
     /**
      * A collections of cards that are in the deck.
@@ -35,10 +45,10 @@ public class Deck {
     /**
      * Creates a new deck. This methods takes a basic deck, copies it to a new collection and then shuffles it.
      */
-    public static Deck create() {
+    private static Deck getShuffled(List<Card> cards) {
         Deck deck = new Deck();
         deck.cards = new Stack<>();
-        deck.cards.addAll(INITIAL_DECK);
+        deck.cards.addAll(cards);
         java.util.Collections.shuffle(deck.cards);
         return deck;
     }
@@ -46,10 +56,9 @@ public class Deck {
     /**
      * Constructs an initial deck creating a card of every card suit and rank combination.
      */
-    private static List<Card> createInitial() {
-        List<Card> list = new ArrayList<>(deckLength);
+    private static List<Card> createDeck(CardRank[] ranks) {
+        List<Card> list = new ArrayList<>();
         CardSuit[] suits = CardSuit.values();
-        CardRank[] ranks = CardRank.values();
         for (CardSuit suit : suits) {
             for (CardRank rank : ranks) {
                 list.add(new Card(rank, suit));
@@ -58,10 +67,34 @@ public class Deck {
         return list;
     }
 
+    public static Deck getShortDeck() {
+        return getShuffled(SHORT_DECK);
+    }
+
+    public static Deck getFullDeck() {
+        return getShuffled(FULL_DECK);
+    }
+
     /**
      * Gets one card. That card is deleted from a deck.
      */
     public Card draw() {
-        return cards.pop();
+        try {
+            return cards.pop();
+        } catch (EmptyStackException e) {
+            return null;
+        }
+    }
+
+    public boolean isEmpty() {
+        return cards.isEmpty();
+    }
+
+    public Card getLast() {
+        return cards.get(0);
+    }
+
+    public int cardsLeft() {
+        return cards.size();
     }
 }

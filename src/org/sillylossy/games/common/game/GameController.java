@@ -46,7 +46,7 @@ public class GameController implements java.io.Serializable {
             case WON:
                 statObj.addWin();
                 break;
-            case PUSH:
+            case DRAW:
                 statObj.addDraw();
             default:
                 break;
